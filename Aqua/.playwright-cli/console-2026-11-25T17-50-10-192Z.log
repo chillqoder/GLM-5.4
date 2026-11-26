@@ -1,0 +1,57 @@
+[      79ms] [ERROR] THREE.WebGLProgram: Shader Error 0 - VALIDATE_STATUS false
+
+Material Name: 
+Material Type: MeshPhysicalMaterial
+
+Program Info Log: Fragment shader is not compiled.
+
+FRAGMENT
+
+ERROR: 0:217: 'applyGill' : no matching overloaded function found
+ERROR: 0:217: 'return' : function return is not matching type:
+
+  212:   float d1 = abs( s - 0.19 - wob ), d2 = abs( s - 0.52 - wob - 0.03 * max( up, 0.0 ) ), d3 = abs( s - 0.88 - wob * 0.5 );
+  213:   float white = clamp( step( d1, 0.065 ) + step( d2, 0.075 ) + step( d3, 0.05 ), 0.0, 1.0 );
+  214:   float black = clamp( step( d1, 0.085 ) + step( d2, 0.095 ) + step( d3, 0.07 ), 0.0, 1.0 );
+  215:   c = mix( c, vec3( 0.02, 0.02, 0.02 ), black );
+  216:   c = mix( c, vec3( 0.98, 0.97, 0.95 ), white );
+> 217:   return applyGill( c, s, ang, 0.3, 0.5 );
+  218: }
+  219: 
+  220: #define NUM_WAVES 8
+  221: #define NUM_CAUSTIC_WAVES 6
+  222: #define MAX_RIPPLES 24
+  223: uniform float uTime; @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:20345
+[      79ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     347ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     349ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     367ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     394ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     424ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     454ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     484ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     514ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     544ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     573ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     604ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     634ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     664ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     694ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     724ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     754ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     784ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     814ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     852ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     882ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     914ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     952ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[     982ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    1014ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    1044ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    1074ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    1104ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    1134ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    1164ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    1194ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    1233ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    1262ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305

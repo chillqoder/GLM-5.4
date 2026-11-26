@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Orc Shaman — Spirits of the Storm</title>
+<link rel="icon" href="data:," />
+<style>
+  :root {
+    --lightning: #5ab4ff;
+    --fire: #ff7a1a;
+    --earth: #6dff6a;
+    --panel: rgba(14, 16, 24, 0.72);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; height: 100%; overflow: hidden; background: #12141c; color: #ece6d6;
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    user-select: none; -webkit-user-select: none;
+  }
+  #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+
+  /* Full-screen spell flash */
+  #flash { position: fixed; inset: 0; pointer-events: none; opacity: 0; background: #fff; }
+
+  /* HUD */
+  #hud { position: fixed; inset: 0; pointer-events: none; }
+  .title { position: absolute; top: 18px; left: 22px; text-shadow: 0 2px 8px rgba(0, 0, 0, .85); }
+  .title h1 { margin: 0; font-size: 20px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: #f3ecd8; }
+  .title p { margin: 3px 0 0; font-size: 11px; letter-spacing: .32em; text-transform: uppercase; color: #8fd3ff; opacity: .9; }
+  .hint { position: absolute; top: 66px; left: 22px; font-size: 12px; color: rgba(236, 230, 214, .62); text-shadow: 0 1px 4px rgba(0, 0, 0, .8); }
+  .hint b { color: #ffe3a0; font-weight: 600; }
+
+  /* Bottom action bar */
+  #bottom {
+    position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: auto;
+  }
+  #mana {
+    position: relative; width: 296px; height: 18px; border-radius: 9px; overflow: hidden;
+    background: rgba(8, 10, 18, .75); border: 1px solid rgba(110, 170, 255, .45);
+    box-shadow: 0 0 12px -2px rgba(70, 140, 255, .6), inset 0 1px 3px rgba(0, 0, 0, .6);
+  }
+  #mana-fill {
+    height: 100%; width: 100%; border-radius: 8px;
+    background: linear-gradient(90deg, #1b4fc9, #3f8ef6 60%, #8fd3ff);
+    box-shadow: 0 0 10px rgba(80, 160, 255, .8); transition: width .12s linear;
+  }
+  #mana.low #mana-fill { background: linear-gradient(90deg, #8a1b1b, #d9453a 60%, #ff9a7a); box-shadow: 0 0 10px rgba(255, 90, 60, .8); }
+  #mana.deny { animation: manaFlash .45s ease; }
+  #mana-text {
+    position: absolute; inset: 0; text-align: center; font-size: 11px; line-height: 17px; font-weight: 600;
+    letter-spacing: .06em; text-shadow: 0 1px 2px #000; font-variant-numeric: tabular-nums;
+  }
+  @keyframes manaFlash {
+    0%, 100% { border-color: rgba(110, 170, 255, .45); }
+    30% { border-color: #ff6a5a; box-shadow: 0 0 22px 2px rgba(255, 60, 40, .9); }
+  }
+  #spellbar {
+    display: flex; gap: 14px; padding: 10px 14px; border-radius: 16px;
+    background: var(--panel); border: 1px solid rgba(255, 255, 255, .08);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 8px 30px rgba(0, 0, 0, .5);
+  }
+  .spell {
+    position: relative; width: 84px; height: 84px; border-radius: 12px; overflow: hidden;
+    border: 2px solid var(--c); color: #f3ecd8; cursor: pointer; padding: 0; font: inherit;
+    background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, .1), rgba(10, 12, 20, .9) 70%);
+    box-shadow: 0 0 14px -4px var(--c), inset 0 0 18px -8px var(--c);
+    transition: transform .08s ease, box-shadow .18s ease, filter .18s ease;
+  }
+  .spell:hover { box-shadow: 0 0 28px -2px var(--c), inset 0 0 22px -6px var(--c); filter: brightness(1.18); }
+  .spell:active { transform: scale(.9); }
+  .spell:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  .spell .icon { display: block; font-size: 34px; line-height: 1; margin-top: 14px; filter: drop-shadow(0 0 8px var(--c)); }
+  .spell .name {
+    display: block; margin-top: 7px; font-size: 9px; line-height: 1; letter-spacing: .09em;
+    text-transform: uppercase; font-variant: small-caps; color: rgba(243, 236, 216, .85); white-space: nowrap;
+  }
+  .spell .key {
+    position: absolute; top: 4px; left: 5px; min-width: 16px; padding: 1px 4px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; line-height: 14px; text-align: center; color: #fff;
+    background: rgba(0, 0, 0, .65); border: 1px solid rgba(255, 255, 255, .28);
+  }
+  .spell .cost { position: absolute; top: 4px; right: 5px; font-size: 10px; font-weight: 600; color: #8fd3ff; text-shadow: 0 1px 2px #000; }
+  /* Clock-wipe cooldown: --p = remaining fraction (1 → 0) */
+  .spell .cd {
+    position: absolute; inset: 0; display: none; pointer-events: none;
+    background: conic-gradient(from 0deg, transparent 0 calc((1 - var(--p, 0)) * 1turn), rgba(0, 0, 0, .78) 0);
+  }
+  .spell .cd-num {
+    position: absolute; inset: 0; display: none; align-items: center; justify-content: center; pointer-events: none;
+    font-size: 28px; font-weight: 800; color: #fff; text-shadow: 0 0 10px #000, 0 2px 2px #000; font-variant-numeric: tabular-nums;
+  }
+  .spell.on-cd .cd { display: block; }
+  .spell.on-cd .cd-num { display: flex; }
+  .spell.on-cd { cursor: default; }
+  .spell.no-mana .cost { color: #ff7a6a; }
+  .spell.no-mana .icon { filter: grayscale(.75) brightness(.65); }
+  .spell.deny { animation: shake .45s ease; }
+  .spell.deny::after { content: ''; position: absolute; inset: 0; background: rgba(255, 40, 20, .38); animation: denyFade .45s ease forwards; pointer-events: none; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); } 15% { transform: translateX(-7px); } 30% { transform: translateX(7px); }
+    45% { transform: translateX(-5px); } 60% { transform: translateX(5px); } 75% { transform: translateX(-3px); }
+  }
+  @keyframes denyFade { from { opacity: 1; } to { opacity: 0; } }
+
+  /* Floating damage numbers */
+  #floaters { position: absolute; inset: 0; overflow: hidden; }
+  .dmg {
+    position: absolute; font-size: 24px; font-weight: 800; letter-spacing: .02em; white-space: nowrap;
+    text-shadow: 0 2px 3px rgba(0, 0, 0, .9), 0 0 14px currentColor; transform: translate(-50%, -50%); will-change: left, top, opacity, transform;
+  }
+  .dmg.crit { font-size: 34px; }
+
+  #loading {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none;
+    color: rgba(236, 230, 214, .6); font-size: 13px; letter-spacing: .22em; text-transform: uppercase; background: #12141c; transition: opacity .5s;
+  }
+  @media (max-width: 480px) {
+    .hint { display: none; }
+    #mana { width: 250px; }
+    .spell { width: 72px; height: 72px; }
+    .spell .icon { font-size: 28px; margin-top: 12px; }
+  }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div id="flash"></div>
+<div id="hud">
+  <div class="title">
+    <h1>Orc Shaman</h1>
+    <p>Spirits of the Storm</p>
+  </div>
+  <div class="hint">Drag to rotate · Scroll to zoom · <b>1</b>/<b>2</b>/<b>3</b> or <b>Q</b>/<b>W</b>/<b>E</b> to cast</div>
+  <div id="bottom">
+    <div id="mana"><div id="mana-fill"></div><span id="mana-text">100 / 100</span></div>
+    <div id="spellbar"></div>
+  </div>
+  <div id="floaters"></div>
+</div>
+<div id="loading">Summoning the spirits…</div>
+
+<script>
+  window.addEventListener('error', () => {
+    const l = document.getElementById('loading');
+    if (l) l.textContent = 'Could not load Three.js from the CDN — check your internet connection and reload.';
+  });
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* =====================================================================
+   0. CONFIG & HELPERS
+===================================================================== */
+const SPELLS = {
+  lightning:  { name: 'Chain Lightning', icon: '⚡', hotkey: '1', altKey: 'q', cost: 20, cooldown: 2, duration: 1.1, releaseAt: 0.45, color: 0x5ab4ff, css: '#5ab4ff', damage: [22, 38] },
+  fireball:   { name: 'Fireball',        icon: '🔥', hotkey: '2', altKey: 'w', cost: 30, cooldown: 3, duration: 1.2, releaseAt: 0.50, color: 0xff7a1a, css: '#ff7a1a', damage: [48, 76] },
+  earthquake: { name: 'Earthquake',      icon: '🪨', hotkey: '3', altKey: 'e', cost: 45, cooldown: 5, duration: 1.6, releaseAt: 0.72, color: 0x6dff6a, css: '#6dff6a', damage: [95, 150] },
+};
+const MANA_MAX = 100;
+const MANA_REGEN = 8;                                   // mana per second
+const IDLE_COLOR = new THREE.Color(0xffe3a0);           // crystal / eye colour at rest
+
+const rnd = (a = 1, b) => (b === undefined ? Math.random() * a : a + Math.random() * (b - a));
+const rr = (v) => (Array.isArray(v) ? rnd(v[0], v[1]) : v ?? 0);   // random-in-range helper
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const easings = {
+  linear: t => t,
+  easeInQuad: t => t * t,
+  easeInCubic: t => t * t * t,
+  easeOutCubic: t => 1 - Math.pow(1 - t, 3),
+  easeInOutCubic: t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
+  easeOutBack: t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); },
+};
+
+const mat = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0, ...o });
+const glowMat = (color, opacity = 1) => new THREE.MeshBasicMaterial({ color, transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+function group(parent, x = 0, y = 0, z = 0) { const g = new THREE.Group(); g.position.set(x, y, z); parent.add(g); return g; }
+function addMesh(parent, geometry, material, x = 0, y = 0, z = 0) {
+  const m = new THREE.Mesh(geometry, material); m.position.set(x, y, z);
+  m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;
+}
+function disposeObject(obj) {
+  obj.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material && o.material.userData.shared !== true) o.material.dispose(); });
+  if (obj.parent) obj.parent.remove(obj);
+}
+
+const _v1 = new THREE.Vector3(), _v2 = new THREE.Vector3(), _v3 = new THREE.Vector3();
+const _q1 = new THREE.Quaternion(), _c1 = new THREE.Color(), _c2 = new THREE.Color();
+
+/* =====================================================================
+   1. RENDERER / SCENE / CAMERA
+===================================================================== */
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.25;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x12141c);
+scene.fog = new THREE.FogExp2(0x12141c, 0.022);
+
+const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 250);
+camera.position.set(0.8, 2.7, 8.5);
+
+const controls = new OrbitControls(camera, canvas);
+controls.target.set(-2.5, 1.2, 0.3);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 3.5;
+controls.maxDistance = 18;
+controls.minPolarAngle = 0.15;
+controls.maxPolarAngle = Math.PI / 2 - 0.04;     // never below the ground
+controls.enablePan = false;
+controls.update();
+
+/* Soft round particle sprite generated at runtime */
+function makeSoftTexture() {
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const ctx = c.getContext('2d');
+  const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.25, 'rgba(255,255,255,0.75)');
+  g.addColorStop(0.6, 'rgba(255,255,255,0.18)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+}
+const softTex = makeSoftTexture();
+
+/* Mottled mossy ground texture (seamless, generated at runtime) */
+function makeGroundTexture() {
+  const s = 256, c = document.createElement('canvas'); c.width = c.height = s;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#3d4b31'; ctx.fillRect(0, 0, s, s);
+  const dot = (x, y, r, fill) => {
+    ctx.fillStyle = fill;
+    for (const dx of [-s, 0, s]) for (const dy of [-s, 0, s]) { ctx.beginPath(); ctx.arc(x + dx, y + dy, r, 0, Math.PI * 2); ctx.fill(); }
+  };
+  for (let i = 0; i < 700; i++) {
+    const k = Math.random();
+    const fill = k < 0.45 ? `rgba(34,46,26,${rnd(0.15, 0.4)})` : k < 0.75 ? `rgba(72,86,48,${rnd(0.1, 0.3)})` : `rgba(58,44,30,${rnd(0.1, 0.35)})`;
+    dot(rnd(s), rnd(s), rnd(3, 18), fill);
+  }
+  for (let i = 0; i < 1400; i++) dot(rnd(s), rnd(s), rnd(0.6, 1.4), `rgba(${rnd(70, 120) | 0},${rnd(90, 130) | 0},${rnd(40, 70) | 0},0.3)`);
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(10, 10);
+  tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+  return tex;
+}
+
+/* =====================================================================
+   2. LIGHTS
+===================================================================== */
+const moonLight = new THREE.DirectionalLight(0xa9c4ff, 2.2);
+function setupLights() {
+  scene.add(new THREE.HemisphereLight(0x6f86b8, 0x2a2a1c, 0.75));
+
+  // Moonlight from the upper left of the camera → key light on the shaman, shadows falling back-right
+  moonLight.position.set(-6, 9, 6);
+  moonLight.target.position.set(-1, 0, 0.5);
+  moonLight.castShadow = true;
+  moonLight.shadow.mapSize.set(2048, 2048);
+  const sc = moonLight.shadow.camera;
+  sc.left = -8; sc.right = 8; sc.top = 8; sc.bottom = -8; sc.near = 1; sc.far = 32;
+  moonLight.shadow.bias = -0.0004; moonLight.shadow.normalBias = 0.02;
+  scene.add(moonLight, moonLight.target);
+
+  // Cool rim light from behind so the silhouette reads against the dark sky
+  const rim = new THREE.DirectionalLight(0x5f6fa8, 0.5);
+  rim.position.set(3, 4, -9);
+  scene.add(rim);
+}
+
+/* Shared materials for the shaman, staff and props */
+const MAT = {
+  skin: mat(0x4a7c3a, { flatShading: true, roughness: 0.8 }),
+  skinDark: mat(0x3a652c, { flatShading: true, roughness: 0.85 }),
+  belly: mat(0x6a9450, { flatShading: true, roughness: 0.85 }),
+  leather: mat(0x4a3222, { roughness: 0.95 }),
+  leatherDark: mat(0x2c1d12, { roughness: 0.95 }),
+  rope: mat(0x8a6a3a, { roughness: 1 }),
+  fur: mat(0x5c4b3d, { roughness: 1, flatShading: true }),
+  furDark: mat(0x3e3128, { roughness: 1, flatShading: true }),
+  bone: mat(0xe6dcc2, { roughness: 0.55 }),
+  wood: mat(0x3b2a1e, { roughness: 0.9 }),
+  red: mat(0xb3302a, { roughness: 0.7, flatShading: true }),
+  teal: mat(0x2a9a9a, { roughness: 0.7, flatShading: true }),
+  white: mat(0xeae4d4, { roughness: 0.8, flatShading: true }),
+  paint: mat(0xf2f6ff, { emissive: 0x3a4a8a, emissiveIntensity: 0.45, roughness: 0.6 }),
+};
+for (const m of Object.values(MAT)) m.userData.shared = true;   // never disposed by temporary effects
+
+/* =====================================================================
+   3. CHARACTER RIG
+===================================================================== */
+const rig = {};
+const restQuat = {};
+let restRootY = 0;
+const JOINTS = ['root', 'torso', 'head', 'leftArm', 'leftForearm', 'leftHand', 'rightArm', 'rightForearm', 'rightHand',
+  'leftThigh', 'leftShin', 'leftFoot', 'rightThigh', 'rightShin', 'rightFoot'];
+const swayers = [];        // hanging feathers / beads that sway
+const eyeMats = [];        // eye materials (colour follows the spell)
+
+function createShaman() {
+  const shaman = new THREE.Group(); shaman.name = 'shaman';
+  const root = group(shaman, 0, 0, 0);
+  rig.shaman = shaman; rig.root = root;
+
+  const M = MAT;
+
+  /* ---------- Legs (hips at y = 1.0) ---------- */
+  const HIP_Y = 1.0, LEG_X = 0.19;
+  for (const side of ['left', 'right']) {
+    const s = side === 'left' ? 1 : -1;
+    const thigh = group(root, s * LEG_X, HIP_Y, 0);
+    addMesh(thigh, new THREE.CapsuleGeometry(0.135, 0.2, 3, 7), M.skin, 0, -0.22, 0);
+    const shin = group(thigh, 0, -0.45, 0);
+    addMesh(shin, new THREE.CapsuleGeometry(0.1, 0.2, 3, 7), M.skin, 0, -0.2, 0);
+    addMesh(shin, new THREE.CylinderGeometry(0.115, 0.125, 0.2, 7), M.furDark, 0, -0.33, 0);   // fur wrap
+    const foot = group(shin, 0, -0.45, 0);
+    addMesh(foot, new THREE.BoxGeometry(0.18, 0.1, 0.32), M.furDark, 0, -0.05, 0.07);
+    addMesh(foot, new THREE.SphereGeometry(0.07, 6, 5), M.skin, 0.055, -0.07, 0.2);            // toes
+    addMesh(foot, new THREE.SphereGeometry(0.07, 6, 5), M.skin, -0.055, -0.07, 0.2);
+    thigh.rotation.set(-0.08, 0, s * 0.08);   // slight orc squat
+    shin.rotation.x = 0.16; foot.rotation.x = -0.08;
+    rig[side + 'Thigh'] = thigh; rig[side + 'Shin'] = shin; rig[side + 'Foot'] = foot;
+  }
+
+  /* ---------- Pelvis, loincloth, belt ---------- */
+  const pelvis = addMesh(root, new THREE.SphereGeometry(0.3, 8, 6), M.leather, 0, HIP_Y, 0); pelvis.scale.set(1.25, 0.75, 0.9);
+  const skirt = addMesh(root, new THREE.CylinderGeometry(0.33, 0.5, 0.55, 10, 1, true), mat(0x3a2618, { roughness: 1, side: THREE.DoubleSide, flatShading: true }), 0, 0.73, 0);
+  skirt.scale.set(1.25, 1, 0.95);
+  for (let i = 0; i < 8; i++) {                                   // tattered strips
+    const a = i / 8 * Math.PI * 2 + rnd(0.3);
+    addMesh(root, new THREE.BoxGeometry(0.1, rnd(0.14, 0.22), 0.02), M.leatherDark, Math.sin(a) * 0.6, 0.38, Math.cos(a) * 0.455).rotation.y = a;
+  }
+  const belt = group(root, 0, 1.0, 0); belt.scale.set(1.25, 1, 0.95);
+  addMesh(belt, new THREE.TorusGeometry(0.32, 0.028, 6, 18), M.rope).rotation.x = Math.PI / 2;
+  addMesh(root, new THREE.SphereGeometry(0.08, 7, 6), M.leather, 0.33, 0.93, 0.2);
+  addMesh(root, new THREE.ConeGeometry(0.08, 0.06, 7), M.leatherDark, 0.33, 1.0, 0.2);
+  addMesh(root, new THREE.SphereGeometry(0.07, 7, 6), M.leather, -0.3, 0.92, 0.22).scale.set(1, 1.2, 0.7);
+  addMesh(root, new THREE.ConeGeometry(0.03, 0.12, 5), M.bone, -0.05, 0.9, 0.37).rotation.x = Math.PI;   // bone charm
+
+  /* ---------- Torso (hunched) ---------- */
+  const torso = group(root, 0, HIP_Y, 0); torso.rotation.x = 0.22;
+  rig.torso = torso;
+  const chest = addMesh(torso, new THREE.CylinderGeometry(0.37, 0.28, 0.62, 8, 1), M.skin, 0, 0.32, 0); chest.scale.set(1.35, 1, 0.82);
+  const belly = addMesh(torso, new THREE.SphereGeometry(0.25, 8, 6), M.belly, 0, 0.12, 0.1); belly.scale.set(1.25, 0.9, 0.7);
+  addMesh(torso, new THREE.SphereGeometry(0.16, 7, 6), M.skin, 0.17, 0.48, 0.17).scale.set(1.1, 0.7, 0.6);   // pecs
+  addMesh(torso, new THREE.SphereGeometry(0.16, 7, 6), M.skin, -0.17, 0.48, 0.17).scale.set(1.1, 0.7, 0.6);
+
+  // Fur mantle
+  const mantlePts = [[0.22, 0.12], [0.3, 0.1], [0.38, 0.04], [0.45, -0.05], [0.5, -0.16], [0.53, -0.26]].map(p => new THREE.Vector2(p[0], p[1]));
+  const mantle = addMesh(torso, new THREE.LatheGeometry(mantlePts, 12), mat(0x5c4b3d, { roughness: 1, flatShading: true, side: THREE.DoubleSide }), 0, 0.62, 0);
+  mantle.scale.set(1.35, 1, 1.05);
+  for (let i = 0; i < 16; i++) {                                   // ragged tufts around the rim
+    const a = i / 16 * Math.PI * 2 + rnd(0.2);
+    const dir = _v1.set(Math.sin(a) * 1.35, -0.45, Math.cos(a) * 1.05).normalize().clone();
+    const tuft = addMesh(torso, new THREE.ConeGeometry(0.06, 0.17, 4), i % 2 ? M.furDark : M.fur, Math.sin(a) * 0.53 * 1.35, 0.62 - 0.3, Math.cos(a) * 0.53 * 1.05);
+    tuft.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+  }
+  // Bone necklace
+  const neck = group(torso, 0, 0.64, 0.03); neck.rotation.x = -1.25;
+  addMesh(neck, new THREE.TorusGeometry(0.27, 0.016, 5, 16), M.leatherDark);
+  for (let i = 0; i < 7; i++) {
+    const a = -0.9 + i * 0.3;
+    addMesh(neck, new THREE.ConeGeometry(0.02, 0.09, 5), M.bone, Math.sin(a) * 0.27, -Math.cos(a) * 0.27, 0).rotation.x = Math.PI;
+  }
+
+  /* ---------- Head ---------- */
+  const head = group(torso, 0, 0.66, 0.1);
+  rig.head = head;
+  addMesh(head, new THREE.CylinderGeometry(0.11, 0.13, 0.16, 7), M.skinDark, 0, 0.06, -0.02);
+  const skull = group(head, 0, 0.3, 0);
+  addMesh(skull, new THREE.SphereGeometry(0.25, 9, 7), M.skin, 0, 0.04, -0.02).scale.set(1, 0.95, 1);
+  addMesh(skull, new THREE.SphereGeometry(0.2, 9, 7), M.skinDark, 0, -0.1, 0.06).scale.set(1.05, 0.72, 1.15);   // under-bite jaw
+  addMesh(skull, new THREE.BoxGeometry(0.44, 0.07, 0.14), M.skinDark, 0, 0.13, 0.19).rotation.x = 0.2;          // heavy brow
+  for (const s of [1, -1]) {
+    addMesh(skull, new THREE.SphereGeometry(0.055, 7, 6), M.leatherDark, s * 0.095, 0.07, 0.2).scale.set(1.1, 0.8, 0.5);
+    const em = new THREE.MeshStandardMaterial({ color: 0x332200, emissive: IDLE_COLOR, emissiveIntensity: 2.2, roughness: 0.3 });
+    addMesh(skull, new THREE.SphereGeometry(0.032, 8, 6), em, s * 0.095, 0.07, 0.225).castShadow = false;
+    eyeMats.push(em);
+    // tusks
+    const tusk = addMesh(skull, new THREE.ConeGeometry(0.035, 0.16, 6), M.bone, s * 0.1, -0.03, 0.23);
+    tusk.rotation.z = -s * 0.28; tusk.rotation.x = -0.1;
+    // pointed ears + ring earrings
+    const ear = group(skull, s * 0.23, 0.06, -0.02); ear.rotation.set(0, s * 0.35, -s * 1.32);
+    addMesh(ear, new THREE.ConeGeometry(0.065, 0.38, 5), M.skin, 0, 0.19, 0);
+    addMesh(ear, new THREE.ConeGeometry(0.04, 0.3, 5), M.skinDark, 0, 0.16, 0.02);
+    addMesh(ear, new THREE.TorusGeometry(0.03, 0.008, 5, 10), M.bone, 0, 0.37, 0);
+    // war paint stripes on the cheeks
+    addMesh(skull, new THREE.BoxGeometry(0.022, 0.1, 0.012), M.paint, s * 0.15, -0.03, 0.19).rotation.set(0, s * 0.7, s * 0.25);
+    addMesh(skull, new THREE.BoxGeometry(0.022, 0.1, 0.012), M.paint, s * 0.19, 0.0, 0.14).rotation.set(0, s * 0.7, s * 0.25);
+    // curved horns (3 stacked segments)
+    const horn = group(skull, s * 0.17, 0.22, -0.06); horn.rotation.set(-0.25, 0, -s * 0.85);
+    let parent = horn;
+    const lens = [0.2, 0.17, 0.14], rads = [[0.055, 0.045], [0.045, 0.03], [0.03, 0]];
+    lens.forEach((len, i) => {
+      addMesh(parent, i === 2 ? new THREE.ConeGeometry(rads[i][0], len, 6) : new THREE.CylinderGeometry(rads[i][1], rads[i][0], len, 6), M.bone, 0, len / 2, 0);
+      parent = group(parent, 0, len, 0); parent.rotation.set(-0.3, 0, s * 0.3);
+    });
+  }
+  addMesh(skull, new THREE.BoxGeometry(0.03, 0.13, 0.012), M.paint, 0, 0.2, 0.21);                 // forehead stripe
+  addMesh(skull, new THREE.SphereGeometry(0.055, 7, 6), M.skinDark, 0, 0.0, 0.25).scale.set(1.4, 0.8, 0.8);   // nose
+  addMesh(skull, new THREE.BoxGeometry(0.22, 0.015, 0.03), M.leatherDark, 0, -0.09, 0.275);         // mouth
+  // Headdress band + beads
+  addMesh(skull, new THREE.TorusGeometry(0.255, 0.03, 6, 14), M.leather, 0, 0.12, -0.02).rotation.x = Math.PI / 2 - 0.2;
+  for (let i = 0; i < 6; i++) {
+    const a = i / 6 * Math.PI * 2;
+    addMesh(skull, new THREE.SphereGeometry(0.025, 6, 5), i % 2 ? M.bone : M.teal, Math.sin(a) * 0.26, 0.13, -0.02 + Math.cos(a) * 0.26);
+  }
+  // Feathers
+  const featherColors = [M.red, M.white, M.teal, M.white, M.red];
+  [-0.16, -0.08, 0, 0.08, 0.16].forEach((x, i) => {
+    const pivot = group(skull, x, 0.14 + (i === 2 ? 0.06 : 0), -0.2);
+    pivot.rotation.set(-0.55 - Math.abs(x) * 1.2, 0, -x * 2.2);
+    addMesh(pivot, new THREE.ConeGeometry(0.045, 0.46, 4), featherColors[i], 0, 0.23, 0).scale.set(1, 1, 0.3);
+    swayers.push({ obj: pivot, phase: rnd(6.28), amp: 0.035, base: pivot.rotation.clone() });
+  });
+
+  /* ---------- Arms ---------- */
+  let rightHand;
+  for (const side of ['left', 'right']) {
+    const s = side === 'left' ? 1 : -1;
+    const arm = group(torso, s * 0.52, 0.6, 0.04); arm.rotation.set(0.05, 0, s * (side === 'right' ? 0.32 : 0.22));
+    addMesh(arm, new THREE.SphereGeometry(0.15, 8, 6), M.skin);
+    addMesh(arm, new THREE.CapsuleGeometry(0.12, 0.2, 3, 7), M.skin, 0, -0.21, 0);
+    const forearm = group(arm, 0, -0.42, 0); forearm.rotation.x = -0.55;
+    addMesh(forearm, new THREE.SphereGeometry(0.11, 7, 6), M.skin);
+    addMesh(forearm, new THREE.CapsuleGeometry(0.095, 0.2, 3, 7), M.skin, 0, -0.2, 0);
+    addMesh(forearm, new THREE.CylinderGeometry(0.12, 0.11, 0.2, 8), M.leather, 0, -0.25, 0);     // bracer
+    for (let i = 0; i < 3; i++) addMesh(forearm, new THREE.SphereGeometry(0.016, 5, 4), M.bone, Math.sin(i * 2.1) * 0.11, -0.22 + i * 0.05, Math.cos(i * 2.1) * 0.11);
+    addMesh(forearm, new THREE.TorusGeometry(0.105, 0.018, 5, 10), M.red, 0, -0.36, 0).rotation.x = Math.PI / 2;    // bead bracelets
+    addMesh(forearm, new THREE.TorusGeometry(0.1, 0.018, 5, 10), M.teal, 0, -0.39, 0).rotation.x = Math.PI / 2;
+    const hand = group(forearm, 0, -0.43, 0);
+    if (side === 'left') {                                                                                  // open palm (casting hand)
+      addMesh(hand, new THREE.BoxGeometry(0.16, 0.15, 0.06), M.skin, 0, -0.07, 0);
+      for (let i = 0; i < 4; i++) addMesh(hand, new THREE.BoxGeometry(0.032, 0.1, 0.035), M.skin, -0.058 + i * 0.039, -0.19, 0.005).rotation.x = -0.15;
+      addMesh(hand, new THREE.BoxGeometry(0.032, 0.08, 0.035), M.skin, 0.1, -0.07, 0.01).rotation.z = -0.7;
+    } else {                                                                                             // fist around the staff
+      addMesh(hand, new THREE.SphereGeometry(0.1, 7, 6), M.skin, 0, -0.07, 0).scale.set(1.15, 1.15, 0.95);
+      for (let i = 0; i < 4; i++) addMesh(hand, new THREE.BoxGeometry(0.03, 0.06, 0.035), M.skin, -0.055 + i * 0.037, -0.1, 0.075);
+      addMesh(hand, new THREE.BoxGeometry(0.03, 0.07, 0.035), M.skin, 0.1, -0.04, 0.05).rotation.z = -0.5;
+    }
+    rig[side + 'Arm'] = arm; rig[side + 'Forearm'] = forearm; rig[side + 'Hand'] = hand;
+    if (side === 'right') rightHand = hand;
+  }
+
+  createStaff(rightHand);
+
+  /* ---------- Rest pose bookkeeping ---------- */
+  // The staff's orientation is animated relative to the body (see applyPose), all other joints store a rest quaternion.
+  for (const j of JOINTS) restQuat[j] = rig[j].quaternion.clone();
+  restRootY = root.position.y;
+
+  scene.add(shaman);
+  return shaman;
+}
+
+/* Build the totem staff as a child of the right hand so it follows the arm everywhere.
+   Its orientation is animated relative to the body in applyPose(). */
+function createStaff(hand) {
+  const staff = group(hand, 0, -0.07, 0);
+  const shaftPts = [[0, -0.9, 0], [0.03, -0.45, 0.02], [-0.02, 0.1, -0.02], [0.025, 0.6, 0.02], [0, 1.05, 0]].map(p => new THREE.Vector3(...p));
+  addMesh(staff, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(shaftPts), 20, 0.035, 6, false), MAT.wood);
+  for (const y of [-0.07, 0, 0.07]) addMesh(staff, new THREE.TorusGeometry(0.042, 0.012, 5, 10), MAT.leather, 0, y, 0).rotation.x = Math.PI / 2;   // grip wraps
+  for (let i = 0; i < 3; i++) {                                                                                                 // wooden claw fork
+    const a = i / 3 * Math.PI * 2;
+    const dir = new THREE.Vector3(-Math.sin(a) * 0.45, 1, -Math.cos(a) * 0.45).normalize();
+    const claw = addMesh(staff, new THREE.ConeGeometry(0.035, 0.34, 5), MAT.wood, Math.sin(a) * 0.09 + dir.x * 0.17, 1.08 + dir.y * 0.17, Math.cos(a) * 0.09 + dir.z * 0.17);
+    claw.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+  }
+  const crystal = group(staff, 0, 1.3, 0);
+  rig.crystalMat = new THREE.MeshStandardMaterial({ color: 0xfff3d0, emissive: IDLE_COLOR, emissiveIntensity: 1.4, roughness: 0.25, metalness: 0.1, flatShading: true });
+  const crystalMesh = addMesh(crystal, new THREE.OctahedronGeometry(0.13), rig.crystalMat); crystalMesh.scale.set(0.8, 1.25, 0.8); crystalMesh.castShadow = false;
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: softTex, color: IDLE_COLOR, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false }));
+  halo.scale.set(0.9, 0.9, 1); crystal.add(halo);
+  const crystalLight = new THREE.PointLight(IDLE_COLOR, 4, 7, 2); crystal.add(crystalLight);
+  // Animal skull charm
+  const skullCharm = group(staff, 0, 0.92, 0.045);
+  addMesh(skullCharm, new THREE.SphereGeometry(0.055, 7, 6), MAT.bone, 0, 0.02, 0);
+  addMesh(skullCharm, new THREE.BoxGeometry(0.04, 0.035, 0.05), MAT.bone, 0, -0.01, 0.05);
+  for (const s of [1, -1]) {
+    addMesh(skullCharm, new THREE.SphereGeometry(0.009, 5, 4), MAT.leatherDark, s * 0.022, 0.02, 0.05);
+    addMesh(skullCharm, new THREE.ConeGeometry(0.012, 0.06, 5), MAT.bone, s * 0.04, 0.06, -0.01).rotation.z = -s * 0.6;
+  }
+  // Hanging feathers + bead strings (they sway in the idle animation)
+  const hang = (x, y, z, color, len, amp) => {
+    const pivot = group(staff, x, y, z);
+    addMesh(pivot, new THREE.CylinderGeometry(0.004, 0.004, 0.07, 4), MAT.leatherDark, 0, -0.035, 0);
+    addMesh(pivot, new THREE.ConeGeometry(0.03, len, 4), color, 0, -0.07 - len / 2, 0).rotation.x = Math.PI;
+    pivot.children[1].scale.set(1, 1, 0.3);
+    swayers.push({ obj: pivot, phase: rnd(6.28), amp, base: pivot.rotation.clone() });
+  };
+  hang(0.07, 0.9, 0.05, MAT.red, 0.22, 0.12); hang(-0.07, 0.9, 0.05, MAT.teal, 0.2, 0.12); hang(0.03, 0.98, -0.06, MAT.white, 0.18, 0.1);
+  const beads = group(staff, 0, 1.0, -0.05);
+  addMesh(beads, new THREE.CylinderGeometry(0.004, 0.004, 0.14, 4), MAT.leatherDark, 0, -0.07, 0);
+  [MAT.bone, MAT.red, MAT.teal].forEach((c, i) => addMesh(beads, new THREE.SphereGeometry(0.016, 6, 5), c, 0, -0.03 - i * 0.045, 0));
+  swayers.push({ obj: beads, phase: rnd(6.28), amp: 0.1, base: beads.rotation.clone() });
+  rig.staff = staff; rig.crystal = crystal; rig.crystalMesh = crystalMesh; rig.crystalLight = crystalLight; rig.halo = halo;
+  return staff;
+}
+
+/* Apply a resolved pose (joint → [x, y, z] offsets, plus optional rootY).
+   The staff is special: its offsets are expressed in the body frame, so [0,0,0] is
+   always "vertical" no matter how the arm is rotated (as if the wrist turned the shaft). */
+function applyPose(p) {
+  for (const name of JOINTS) {
+    const j = rig[name], off = p[name];
+    j.quaternion.copy(restQuat[name]);
+    if (off) { j.rotateX(off[0]); j.rotateY(off[1]); j.rotateZ(off[2]); }
+  }
+  _q1.copy(rig.torso.quaternion).multiply(rig.rightArm.quaternion).multiply(rig.rightForearm.quaternion).multiply(rig.rightHand.quaternion).invert();
+  rig.staff.quaternion.copy(_q1);
+  const so = p.staff;
+  if (so) { rig.staff.rotateX(so[0]); rig.staff.rotateY(so[1]); rig.staff.rotateZ(so[2]); }
+  rig.root.position.y = restRootY + (p.rootY || 0);
+  rig.torso.scale.y = 1;
+}
+
+/* =====================================================================
+   4. SPELL ANIMATION CLIPS
+   Each pose lists joint offsets [x, y, z] in radians. Unspecified joints
+   carry over from the previous keyframe; `reset` returns to the rest pose.
+===================================================================== */
+const CLIPS = {
+  lightning: [
+    { t: 0, pose: {} },
+    { t: 0.45, e: 'easeOutCubic', pose: {                      // storm call: staff high, left palm to the sky
+      root: [-0.08, 0, 0], rootY: -0.03, torso: [-0.14, 0.1, 0], head: [-0.45, 0, 0],
+      rightArm: [-0.25, 0, -2.75], rightForearm: [0.5, 0, 0], staff: [-0.1, 0, 0.05],
+      leftArm: [-0.5, 0, 2.3], leftForearm: [0.45, 0, 0], leftHand: [-0.4, 0, 0],
+    } },
+    { t: 0.6, pose: {} },                                       // hold through the strike
+    { t: 1.1, e: 'easeInOutCubic', reset: true },
+  ],
+  fireball: [
+    { t: 0, pose: {} },
+    { t: 0.5, e: 'easeOutCubic', pose: {                       // wind-up: chest turns away from the target, left hand at the hip, staff points forward
+      root: [0, 0.1, 0], rootY: -0.03, torso: [0.05, 0.3, 0], head: [0, -0.7, 0],
+      rightArm: [-1.25, 0, -0.35], rightForearm: [0.5, 0, 0], staff: [1.45, 0, 0],
+      leftArm: [0.35, 0, 0.25], leftForearm: [-0.65, 0, 0],
+    } },
+    { t: 0.62, e: 'easeOutBack', pose: {                        // throw: chest twists toward the target, arm snaps out
+      root: [0.05, -0.15, 0], rootY: -0.05, torso: [0.1, -0.3, 0], head: [0.05, 0, 0],
+      leftArm: [-1.9, 0, -0.35], leftForearm: [0.45, 0, 0],
+    } },
+    { t: 1.2, e: 'easeInOutCubic', reset: true },
+  ],
+  earthquake: [
+    { t: 0, pose: {} },
+    { t: 0.55, e: 'easeInOutCubic', pose: {                     // lift the staff with both hands, crouch
+      rootY: -0.18, torso: [0.15, 0, 0], head: [0.1, 0, 0],
+      leftThigh: [-0.56, 0, 0.1], rightThigh: [-0.56, 0, -0.1], leftShin: [1.12, 0, 0], rightShin: [1.12, 0, 0], leftFoot: [-0.56, 0, 0], rightFoot: [-0.56, 0, 0],
+      rightArm: [-1.29, 1.08, 0.14], rightForearm: [-0.68, 0, 0], staff: [0.08, 0, 0],
+      leftArm: [-1.78, -0.67, -0.47], leftForearm: [-0.77, 0, 0], leftHand: [2.21, -0.04, -0.69],
+    } },
+    { t: 0.72, e: 'easeInCubic', pose: {                        // SLAM
+      rootY: -0.30, root: [0.08, 0, 0], torso: [0.55, 0, 0], head: [0.3, 0, 0],
+      leftThigh: [-0.9, 0, 0.1], rightThigh: [-0.9, 0, -0.1], leftShin: [1.8, 0, 0], rightShin: [1.8, 0, 0], leftFoot: [-0.9, 0, 0], rightFoot: [-0.9, 0, 0],
+      rightArm: [-1.11, 1.19, -0.1], rightForearm: [-0.98, 0, 0], staff: [-0.87, 0, 0],
+      leftArm: [-2.18, -1.2, -1.24], leftForearm: [-1.22, 0, 0], leftHand: [2.2, -0.15, 0.77],
+    } },
+    { t: 0.95, pose: {} },                                       // hold at the bottom
+    { t: 1.6, e: 'easeInOutCubic', reset: true },
+  ],
+};
+function resolveClip(clip) {
+  let cur = {};
+  for (const k of clip) { if (k.reset) cur = {}; cur = Object.assign({}, cur, k.pose); k.resolved = cur; }
+}
+const ZERO3 = [0, 0, 0];
+function sampleClip(clip, t) {
+  let i = 0;
+  while (i < clip.length - 2 && t > clip[i + 1].t) i++;
+  const a = clip[i], b = clip[i + 1];
+  if (t <= a.t || b.t === a.t) return a.resolved;
+  const e = (easings[b.e] || easings.linear)(clamp((t - a.t) / (b.t - a.t), 0, 1));
+  const out = {};
+  for (const k of new Set([...Object.keys(a.resolved), ...Object.keys(b.resolved)])) {
+    const va = a.resolved[k] ?? (k === 'rootY' ? 0 : ZERO3), vb = b.resolved[k] ?? (k === 'rootY' ? 0 : ZERO3);
+    out[k] = typeof vb === 'number' ? lerp(va, vb, e) : [lerp(va[0], vb[0], e), lerp(va[1], vb[1], e), lerp(va[2], vb[2], e)];
+  }
+  return out;
+}
+
+/* World-space helpers used by the spells */
+function getStaffTipWorldPosition() { return rig.crystal.getWorldPosition(new THREE.Vector3()); }
+function getStaffBaseWorldPosition() { return rig.staff.localToWorld(new THREE.Vector3(0, -0.9, 0)); }
+
+/* =====================================================================
+   5. TRAINING DUMMY
+===================================================================== */
+const dummy = new THREE.Group();
+const dummyPivot = new THREE.Group();
+let strawMat, chestMark, dummyChest;
+const wobble = { ang: 0, vel: 0, k: 60, c: 2.5 };
+let dummyFlash = 0; const dummyFlashColor = new THREE.Color();
+
+function createDummy() {
+  dummy.position.set(-3.7, 0, 2.15);
+  dummy.add(dummyPivot);
+  const wood = mat(0x5a4330, { roughness: 0.9 }), woodDark = mat(0x3a2a1c, { roughness: 0.95 });
+  strawMat = mat(0xc9a86a, { roughness: 1, flatShading: true });
+  addMesh(dummyPivot, new THREE.CylinderGeometry(0.35, 0.45, 0.14, 8), woodDark, 0, 0.07, 0);              // base
+  addMesh(dummyPivot, new THREE.CylinderGeometry(0.07, 0.085, 1.6, 7), wood, 0, 0.9, 0);                   // post
+  addMesh(dummyPivot, new THREE.CapsuleGeometry(0.3, 0.55, 4, 8), strawMat, 0, 1.05, 0);                   // straw body
+  addMesh(dummyPivot, new THREE.BoxGeometry(1.3, 0.09, 0.09), wood, 0, 1.32, 0);                           // cross-bar arms
+  addMesh(dummyPivot, new THREE.SphereGeometry(0.1, 7, 6), strawMat, 0.65, 1.32, 0);
+  addMesh(dummyPivot, new THREE.SphereGeometry(0.1, 7, 6), strawMat, -0.65, 1.32, 0);
+  addMesh(dummyPivot, new THREE.SphereGeometry(0.21, 8, 6), strawMat, 0, 1.68, 0);                         // sack head
+  for (const y of [0.9, 1.05, 1.2]) addMesh(dummyPivot, new THREE.TorusGeometry(0.3, 0.02, 5, 14), woodDark, 0, y, 0).rotation.x = Math.PI / 2;   // rope wraps
+  addMesh(dummyPivot, new THREE.TorusGeometry(0.2, 0.02, 5, 12), woodDark, 0, 1.52, 0).rotation.x = Math.PI / 2;   // neck rope
+  // Stitched X eyes + mouth
+  const thread = mat(0x2a1a10, { roughness: 1 });
+  for (const s of [1, -1]) for (const r of [0.7, -0.7]) addMesh(dummyPivot, new THREE.BoxGeometry(0.09, 0.012, 0.012), thread, s * 0.085, 1.72, 0.195).rotation.z = r;
+  addMesh(dummyPivot, new THREE.BoxGeometry(0.16, 0.012, 0.012), thread, 0, 1.6, 0.205);
+  for (let i = -1; i <= 1; i++) addMesh(dummyPivot, new THREE.BoxGeometry(0.012, 0.04, 0.012), thread, i * 0.05, 1.6, 0.205);
+  // Painted target mark on the chest
+  chestMark = new THREE.Mesh(new THREE.RingGeometry(0.07, 0.11, 20), mat(0xa8322a, { roughness: 1 }));
+  chestMark.position.set(0, 1.08, 0.305); dummyPivot.add(chestMark);
+  dummyChest = group(dummyPivot, 0, 1.08, 0.2);
+  scene.add(dummy);
+  shamanLookAtDummy();
+}
+function shamanLookAtDummy() {
+  // shaman faces the dummy; dummy faces halfway between the shaman and the camera so its face stays visible
+  // The dummy stands at the shaman's front-right; the camera views him from the front-left,
+  // so gestures toward the target read sideways instead of pointing at the lens.
+  rig.shaman.rotation.y = Math.atan2(dummy.position.x - rig.shaman.position.x, dummy.position.z - rig.shaman.position.z) + 0.52;
+  const toShaman = _v1.copy(rig.shaman.position).sub(dummy.position).setY(0).normalize();
+  const toCam = _v2.copy(camera.position).sub(dummy.position).setY(0).normalize();
+  const dir = toShaman.add(toCam).normalize();
+  dummy.rotation.y = Math.atan2(dir.x, dir.z);
+}
+function getTargetPosition() { return dummyChest.getWorldPosition(new THREE.Vector3()); }
+
+function hitDummy(strength, type) {
+  wobble.vel -= strength;                               // push the top away from the shaman (local −Z)
+  dummyFlash = 1; dummyFlashColor.set(SPELLS[type].color);
+  const [a, b] = SPELLS[type].damage;
+  const dmg = Math.round(rnd(a, b));
+  spawnFloater(getTargetPosition(), dmg, SPELLS[type].css, dmg > a + (b - a) * 0.8);
+}
+function updateDummy(dt) {
+  const acc = -wobble.k * wobble.ang - wobble.c * wobble.vel;
+  wobble.vel += acc * dt; wobble.ang += wobble.vel * dt;
+  dummyPivot.rotation.x = wobble.ang;
+  if (dummyFlash > 0) {
+    dummyFlash = Math.max(0, dummyFlash - dt * 3);
+    strawMat.emissive.copy(dummyFlashColor).multiplyScalar(dummyFlash * 0.9);
+  }
+}
+
+/* =====================================================================
+   6. ENVIRONMENT (ground, ritual circle, rocks, campfire, stars)
+===================================================================== */
+let ritualRing, ritualRing2, fireLight, firePos = new THREE.Vector3();
+const rockMaterial = mat(0x4b5058, { flatShading: true, roughness: 0.95 });
+rockMaterial.userData.shared = true;
+let fireAccum = 0, sparkAccum = 0;
+
+function createEnvironment() {
+  const ground = new THREE.Mesh(new THREE.CircleGeometry(40, 64), new THREE.MeshStandardMaterial({ map: makeGroundTexture(), roughness: 1 }));
+  ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+
+  // Glowing ritual circle
+  const ringMat = new THREE.MeshBasicMaterial({ color: IDLE_COLOR, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+  ritualRing = new THREE.Mesh(new THREE.RingGeometry(1.32, 1.42, 48), ringMat);
+  ritualRing.rotation.x = -Math.PI / 2; ritualRing.position.y = 0.012; scene.add(ritualRing);
+  ritualRing2 = new THREE.Mesh(new THREE.RingGeometry(1.02, 1.05, 40), ringMat);
+  ritualRing2.rotation.x = -Math.PI / 2; ritualRing2.position.y = 0.012; scene.add(ritualRing2);
+
+  // Ring of small stones + scattered rocks
+  for (let i = 0; i < 14; i++) {
+    const a = i / 14 * Math.PI * 2 + rnd(-0.1, 0.1), s = rnd(0.14, 0.26);
+    const m = addMesh(scene, new THREE.DodecahedronGeometry(s, 0), rockMaterial, Math.sin(a) * 1.75, s * 0.5, Math.cos(a) * 1.75);
+    m.rotation.set(rnd(6.28), rnd(6.28), rnd(6.28)); m.scale.y = rnd(0.6, 1);
+  }
+  for (let i = 0; i < 18; i++) {
+    const a = rnd(Math.PI * 2), d = rnd(4.5, 17), x = Math.sin(a) * d, z = Math.cos(a) * d;
+    if (Math.hypot(x - dummy.position.x, z - dummy.position.z) < 2.5 || Math.hypot(x - firePos.x, z - firePos.z) < 2) continue;
+    const s = rnd(0.25, 0.85);
+    const m = addMesh(scene, new THREE.DodecahedronGeometry(s, 0), rockMaterial, x, s * 0.3, z);
+    m.rotation.set(rnd(6.28), rnd(6.28), rnd(6.28)); m.scale.set(1, rnd(0.5, 0.9), rnd(0.7, 1.1));
+  }
+  // Dead stalagmite-like trees for silhouettes
+  const treeMat = mat(0x1c1a17, { flatShading: true, roughness: 1 });
+  for (let i = 0; i < 14; i++) {
+    // only in the back half of the scene so they never sit in front of the dummy or the shaman
+    const x = rnd(-17, 17), z = rnd(-17, -5.5), h = rnd(1.8, 4.5);
+    addMesh(scene, new THREE.ConeGeometry(rnd(0.12, 0.3), h, 5), treeMat, x, h / 2, z).rotation.set(rnd(-0.15, 0.15), rnd(6.28), rnd(-0.15, 0.15));
+  }
+  // Distant hills
+  const hillMat = mat(0x12161f, { flatShading: true });
+  for (let i = 0; i < 9; i++) {
+    const a = i / 9 * Math.PI * 2 + rnd(0.3), d = rnd(28, 36), h = rnd(2.5, 5.5);
+    addMesh(scene, new THREE.ConeGeometry(rnd(7, 11), h, 6), hillMat, Math.sin(a) * d, h / 2 - 0.5, Math.cos(a) * d).castShadow = false;
+  }
+  // Stars
+  const n = 700, arr = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const a = rnd(Math.PI * 2), e = rnd(0.05, 1.5), r = 95;
+    arr[i * 3] = Math.cos(e) * Math.sin(a) * r; arr[i * 3 + 1] = Math.sin(e) * r; arr[i * 3 + 2] = Math.cos(e) * Math.cos(a) * r;
+  }
+  const starGeo = new THREE.BufferGeometry(); starGeo.setAttribute('position', new THREE.BufferAttribute(arr, 3));
+  const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ size: 0.32, map: softTex, color: 0xdfe8ff, transparent: true, opacity: 1, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }));
+  stars.frustumCulled = false; scene.add(stars);
+  createCampfire();
+}
+
+function createCampfire() {
+  const back = new THREE.Vector3(0.3, 0, -2.4).applyAxisAngle(new THREE.Vector3(0, 1, 0), rig.shaman.rotation.y);   // behind the orc
+  firePos.set(back.x, 0.12, back.z);
+  const fire = group(scene, back.x, 0, back.z);
+  for (let i = 0; i < 9; i++) {
+    const a = i / 9 * Math.PI * 2;
+    addMesh(fire, new THREE.DodecahedronGeometry(rnd(0.1, 0.16), 0), rockMaterial, Math.sin(a) * 0.48, 0.08, Math.cos(a) * 0.48).rotation.set(rnd(6.28), rnd(6.28), 0);
+  }
+  const logMat = mat(0x2e2016, { roughness: 1 });
+  for (let i = 0; i < 4; i++) {
+    const log = addMesh(fire, new THREE.CylinderGeometry(0.05, 0.06, 0.62, 6), logMat, 0, 0.14, 0);
+    log.rotation.order = 'YXZ'; log.rotation.set(Math.PI / 2 - 0.4, i * Math.PI / 2 + 0.4, 0);
+  }
+  const ember = new THREE.Mesh(new THREE.CircleGeometry(0.28, 12), glowMat(0xff5a10, 0.8));
+  ember.rotation.x = -Math.PI / 2; ember.position.y = 0.03; fire.add(ember);
+  fireLight = new THREE.PointLight(0xff8a3a, 9, 11, 2); fireLight.position.set(0, 0.7, 0); fire.add(fireLight);
+}
+
+/* Spirit wisps drifting around the shaman */
+let wisps = [], wispArr, wispGeo;
+function createWisps() {
+  const n = 7;
+  wispArr = new Float32Array(n * 3);
+  wispGeo = new THREE.BufferGeometry(); wispGeo.setAttribute('position', new THREE.BufferAttribute(wispArr, 3).setUsage(THREE.DynamicDrawUsage));
+  const pts = new THREE.Points(wispGeo, new THREE.PointsMaterial({ size: 0.3, map: softTex, color: 0x9fe6ff, transparent: true, opacity: 0.8, depthWrite: false, blending: THREE.AdditiveBlending }));
+  pts.frustumCulled = false; scene.add(pts);
+  wisps = Array.from({ length: n }, (_, i) => ({ a: rnd(6.28), r: rnd(1.3, 2.4), h: rnd(0.4, 1.9), s: rnd(0.15, 0.4) * (i % 2 ? 1 : -1), w: rnd(0.5, 1.2), p: rnd(6.28) }));
+}
+function updateWisps(t, dt) {
+  wisps.forEach((w, i) => {
+    w.a += w.s * dt;
+    const r = w.r + Math.sin(t * 0.3 + w.p) * 0.25;
+    wispArr[i * 3] = Math.sin(w.a) * r; wispArr[i * 3 + 1] = w.h + Math.sin(t * w.w + w.p) * 0.25; wispArr[i * 3 + 2] = Math.cos(w.a) * r;
+  });
+  wispGeo.attributes.position.needsUpdate = true;
+}
+
+/* =====================================================================
+   7. PARTICLES (single pooled Points with a soft sprite shader)
+===================================================================== */
+const PARTICLE_VS = `
+  attribute float aSize; attribute float aAlpha; attribute vec3 aColor;
+  uniform float uScale;
+  varying vec3 vColor; varying float vAlpha;
+  void main() {
+    vColor = aColor; vAlpha = aAlpha;
+    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    gl_PointSize = min(aSize * uScale / max(0.1, -mvPosition.z), 220.0);
+    gl_Position = projectionMatrix * mvPosition;
+  }`;
+const PARTICLE_FS = `
+  uniform sampler2D uMap;
+  varying vec3 vColor; varying float vAlpha;
+  void main() {
+    float a = texture2D(uMap, gl_PointCoord).a * vAlpha;
+    if (a < 0.004) discard;
+    gl_FragColor = vec4(vColor, a);
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
+  }`;
+
+class ParticleSystem {
+  constructor(max, texture) {
+    this.max = max; this.list = [];
+    const g = new THREE.BufferGeometry();
+    this.aPos = new Float32Array(max * 3); this.aCol = new Float32Array(max * 3); this.aSize = new Float32Array(max); this.aAlpha = new Float32Array(max);
+    g.setAttribute('position', new THREE.BufferAttribute(this.aPos, 3).setUsage(THREE.DynamicDrawUsage));
+    g.setAttribute('aColor', new THREE.BufferAttribute(this.aCol, 3).setUsage(THREE.DynamicDrawUsage));
+    g.setAttribute('aSize', new THREE.BufferAttribute(this.aSize, 1).setUsage(THREE.DynamicDrawUsage));
+    g.setAttribute('aAlpha', new THREE.BufferAttribute(this.aAlpha, 1).setUsage(THREE.DynamicDrawUsage));
+    g.setDrawRange(0, 0);
+    this.geo = g;
+    this.material = new THREE.ShaderMaterial({ uniforms: { uMap: { value: texture }, uScale: { value: 600 } }, vertexShader: PARTICLE_VS, fragmentShader: PARTICLE_FS, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+    this.points = new THREE.Points(g, this.material); this.points.frustumCulled = false; this.points.renderOrder = 5;
+  }
+  /* One particle. Options: position, jitter, velocity, speed, dir, spread, gravity, drag, life, size, sizeEnd, color, colorEnd, alpha */
+  spawn(o) {
+    if (this.list.length >= this.max) return;
+    const p = {};
+    const j = o.jitter ?? 0;
+    p.x = o.position.x + rnd(-j, j); p.y = o.position.y + rnd(-j, j); p.z = o.position.z + rnd(-j, j);
+    let vx = o.velocity?.x ?? 0, vy = o.velocity?.y ?? 0, vz = o.velocity?.z ?? 0;
+    const sp = rr(o.speed);
+    if (sp) {
+      let dx = rnd(-1, 1), dy = rnd(-1, 1), dz = rnd(-1, 1);
+      while (dx * dx + dy * dy + dz * dz > 1) { dx = rnd(-1, 1); dy = rnd(-1, 1); dz = rnd(-1, 1); }
+      const l = Math.hypot(dx, dy, dz) || 1; dx /= l; dy /= l; dz /= l;
+      if (o.dir) { const k = 1 - (o.spread ?? 1); dx = dx * (1 - k) + o.dir.x * k; dy = dy * (1 - k) + o.dir.y * k; dz = dz * (1 - k) + o.dir.z * k; const m = Math.hypot(dx, dy, dz) || 1; dx /= m; dy /= m; dz /= m; }
+      vx += dx * sp; vy += dy * sp; vz += dz * sp;
+    }
+    p.vx = vx; p.vy = vy; p.vz = vz;
+    p.life = 0; p.maxLife = rr(o.life ?? 1);
+    p.size = rr(o.size ?? 0.2); p.sizeEnd = o.sizeEnd ?? 0;
+    _c1.set(o.color ?? 0xffffff); _c2.set(o.colorEnd ?? o.color ?? 0xffffff);
+    p.r = _c1.r; p.g = _c1.g; p.b = _c1.b; p.r2 = _c2.r; p.g2 = _c2.g; p.b2 = _c2.b;
+    p.gravity = o.gravity ?? 0; p.drag = o.drag ?? 0; p.alpha = o.alpha ?? 1;
+    this.list.push(p);
+  }
+  burst(o) { for (let i = 0, n = o.count ?? 10; i < n; i++) this.spawn(o); }
+  update(dt) {
+    const L = this.list; let n = 0;
+    for (let i = 0; i < L.length; i++) {
+      const p = L[i]; p.life += dt;
+      if (p.life >= p.maxLife) { L[i] = L[L.length - 1]; L.pop(); i--; continue; }
+      const dr = Math.max(0, 1 - p.drag * dt);
+      p.vx *= dr; p.vz *= dr; p.vy = p.vy * dr + p.gravity * dt;
+      p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt;
+      const k = p.life / p.maxLife;
+      this.aPos[n * 3] = p.x; this.aPos[n * 3 + 1] = p.y; this.aPos[n * 3 + 2] = p.z;
+      this.aCol[n * 3] = lerp(p.r, p.r2, k); this.aCol[n * 3 + 1] = lerp(p.g, p.g2, k); this.aCol[n * 3 + 2] = lerp(p.b, p.b2, k);
+      this.aSize[n] = lerp(p.size, p.sizeEnd, k);
+      this.aAlpha[n] = p.alpha * Math.min(1, p.life * 10) * (1 - k);
+      n++;
+    }
+    this.geo.setDrawRange(0, n);
+    for (const name of ['position', 'aColor', 'aSize', 'aAlpha']) this.geo.attributes[name].needsUpdate = true;
+  }
+}
+const particles = new ParticleSystem(1500, softTex);
+scene.add(particles.points);
+const UP = new THREE.Vector3(0, 1, 0);
+
+/* =====================================================================
+   8. EFFECTS (all independent of the casting animation, self-disposing)
+===================================================================== */
+const effects = [];
+function addEffect(e) { effects.push(e); return e; }
+function after(seconds, fn) { let t = 0; addEffect({ update(dt) { t += dt; if (t >= seconds) { fn(); return false; } return true; } }); }
+function updateEffects(dt) {
+  for (let i = effects.length - 1; i >= 0; i--) {
+    if (!effects[i].update(dt)) { effects[i].dispose?.(); effects.splice(i, 1); }
+  }
+}
+
+/* --- Lightning: midpoint-displacement bolt, re-randomised while alive --- */
+class PolylineCurve extends THREE.Curve {
+  constructor(pts) { super(); this.pts = pts; }
+  getPoint(t, target = new THREE.Vector3()) {
+    const n = this.pts.length - 1, f = t * n, i = Math.min(n - 1, Math.floor(f));
+    return target.copy(this.pts[i]).lerp(this.pts[i + 1], f - i);
+  }
+}
+function makeBoltPoints(a, b, jag, iterations) {
+  let pts = [a.clone(), b.clone()];
+  for (let it = 0; it < iterations; it++) {
+    const next = [];
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p = pts[i], q = pts[i + 1], mid = p.clone().add(q).multiplyScalar(0.5);
+      const dir = q.clone().sub(p).normalize();
+      const n1 = new THREE.Vector3().crossVectors(dir, Math.abs(dir.y) < 0.9 ? UP : new THREE.Vector3(1, 0, 0)).normalize();
+      const n2 = new THREE.Vector3().crossVectors(dir, n1).normalize();
+      const ang = rnd(Math.PI * 2);
+      mid.addScaledVector(n1, Math.cos(ang) * rnd(-jag, jag)).addScaledVector(n2, Math.sin(ang) * rnd(-jag, jag));
+      next.push(p, mid);
+    }
+    next.push(pts[pts.length - 1]); pts = next; jag *= 0.5;
+  }
+  return pts;
+}
+function createBolt(a, b, color) {
+  const g = new THREE.Group(); scene.add(g);
+  const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
+  const glowMatB = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false });
+  const branchMat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false });
+  let core, glow, branches;
+  const regenerate = () => {
+    for (const m of [core, glow, branches]) if (m) { m.geometry.dispose(); g.remove(m); }
+    const pts = makeBoltPoints(a, b, a.distanceTo(b) * 0.26, 5);
+    const curve = new PolylineCurve(pts);
+    core = new THREE.Mesh(new THREE.TubeGeometry(curve, pts.length * 2, 0.022, 5, false), coreMat);
+    glow = new THREE.Mesh(new THREE.TubeGeometry(curve, pts.length * 2, 0.08, 5, false), glowMatB);
+    const bp = [];
+    for (let k = 0; k < 4; k++) {                                   // side branches
+      const i = Math.floor(rnd(pts.length * 0.15, pts.length * 0.8));
+      const p = pts[i], dir = p.clone().sub(pts[i - 1]).normalize();
+      const end = p.clone().addScaledVector(dir, rnd(0.3, 0.8)).add(_v1.set(rnd(-1, 1), rnd(-0.6, 0.3), rnd(-1, 1)).multiplyScalar(rnd(0.3, 0.9)));
+      const sub = makeBoltPoints(p, end, 0.25, 3);
+      for (let j = 0; j < sub.length - 1; j++) bp.push(sub[j], sub[j + 1]);
+    }
+    branches = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(bp), branchMat);
+    g.add(core, glow, branches);
+  };
+  regenerate();
+  return addEffect({
+    t: 0, next: 0,
+    update(dt) {
+      this.t += dt;
+      if (this.t > 0.28) {
+        const o = 1 - (this.t - 0.28) / 0.15;
+        coreMat.opacity = Math.max(0, o); glowMatB.opacity = 0.35 * Math.max(0, o); branchMat.opacity = 0.8 * Math.max(0, o);
+        return o > 0;
+      }
+      if (this.t >= this.next) { this.next = this.t + 0.065; regenerate(); }
+      return true;
+    },
+    dispose() { disposeObject(g); coreMat.dispose(); glowMatB.dispose(); branchMat.dispose(); },
+  });
+}
+
+function flashLight(pos, color, intensity, dur) {
+  const l = new THREE.PointLight(color, intensity, 12, 2); l.position.copy(pos); scene.add(l);
+  addEffect({ t: 0, update(dt) { this.t += dt; const k = 1 - this.t / dur; if (k <= 0) return false; l.intensity = intensity * k * k; return true; }, dispose() { scene.remove(l); l.dispose(); } });
+}
+function groundRing(pos, color, r0, r1, dur, opacity = 0.9, thickness = 0.12) {
+  const m = new THREE.Mesh(new THREE.RingGeometry(1 - thickness, 1, 48), glowMat(color, opacity));
+  m.rotation.x = -Math.PI / 2; m.position.set(pos.x, 0.02 + rnd(0.01), pos.z); m.scale.setScalar(r0); scene.add(m);
+  addEffect({ t: 0, update(dt) { this.t += dt; const u = Math.min(1, this.t / dur); m.scale.setScalar(lerp(r0, r1, easings.easeOutCubic(u))); m.material.opacity = opacity * (1 - u); return u < 1; }, dispose() { disposeObject(m); } });
+}
+function expandingSphere(pos, color, r1, dur) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(1, 14, 10), glowMat(color, 0.9));
+  m.position.copy(pos); m.scale.setScalar(0.15); scene.add(m);
+  addEffect({ t: 0, update(dt) { this.t += dt; const u = Math.min(1, this.t / dur); m.scale.setScalar(lerp(0.15, r1, easings.easeOutCubic(u))); m.material.opacity = 0.9 * (1 - u) * (1 - u); return u < 1; }, dispose() { disposeObject(m); } });
+}
+
+/* --- Earthquake: line of rock spikes erupting from the ground --- */
+function rockSpikes(from, to) {
+  const dir = to.clone().sub(from).setY(0).normalize();
+  const perp = new THREE.Vector3(-dir.z, 0, dir.x);
+  const dist = to.clone().sub(from).setY(0).length();
+  const rockMat = new THREE.MeshStandardMaterial({ color: 0x6b6355, roughness: 0.95, flatShading: true, emissive: 0x1f3a14, emissiveIntensity: 0.6 });
+  const g = new THREE.Group(); scene.add(g);
+  const rocks = [];
+  const n = 8;
+  for (let i = 0; i < n; i++) {
+    const d = lerp(0.35, dist + 1.3, i / (n - 1));
+    const sx = rnd(0.16, 0.26), sy = rnd(0.45, 0.8), sz = rnd(0.16, 0.26);
+    const m = new THREE.Mesh(new THREE.DodecahedronGeometry(1, 0), rockMat);
+    m.scale.set(sx, sy, sz);
+    m.position.copy(from).addScaledVector(dir, d).addScaledVector(perp, rnd(-0.3, 0.3)); m.position.y = -sy;
+    m.rotation.set(rnd(-0.3, 0.3), rnd(6.28), rnd(-0.3, 0.3));
+    m.castShadow = m.receiveShadow = true;
+    g.add(m);
+    rocks.push({ m, delay: i * 0.07, sy, top: sy * 0.45, puffed: false });
+  }
+  addEffect({
+    t: 0,
+    update(dt) {
+      this.t += dt; let alive = false;
+      for (const r of rocks) {
+        const lt = this.t - r.delay;
+        if (lt < 0) { alive = true; continue; }
+        if (lt < 0.3) {
+          r.m.position.y = lerp(-r.sy, r.top, easings.easeOutBack(lt / 0.3));
+          if (!r.puffed) { r.puffed = true; particles.burst({ position: _v1.copy(r.m.position).setY(0.1), count: 8, color: 0x8a7a5a, colorEnd: 0x3a3028, speed: [0.8, 2], dir: UP, spread: 0.2, gravity: -3, life: [0.4, 0.8], size: [0.15, 0.3], alpha: 0.5 }); }
+          alive = true;
+        } else if (lt < 1.0) { r.m.position.y = r.top; alive = true; }
+        else if (lt < 1.4) { r.m.position.y = lerp(r.top, -r.sy, easings.easeInCubic((lt - 1.0) / 0.4)); alive = true; }
+        else r.m.position.y = -r.sy;
+      }
+      return alive;
+    },
+    dispose() { disposeObject(g); rockMat.dispose(); },
+  });
+}
+
+/* --- Earthquake: small totem that rises beside the shaman, pulses, sinks --- */
+function spawnTotem(pos) {
+  const g = new THREE.Group();
+  const wood1 = mat(0x6b4a2b, { roughness: 0.9, flatShading: true }), wood2 = mat(0x7d5a36, { roughness: 0.9, flatShading: true }), dark = mat(0x3a2a1a, { roughness: 0.95 }), bone = mat(0xe6dcc2, { roughness: 0.55 });
+  const eyeMat = new THREE.MeshStandardMaterial({ color: 0x1a3a1a, emissive: 0x6dff6a, emissiveIntensity: 2, roughness: 0.4 });
+  addMesh(g, new THREE.DodecahedronGeometry(0.34, 0), rockMaterial).scale.y = 0.5;
+  g.children[0].position.y = 0.12;
+  addMesh(g, new THREE.CylinderGeometry(0.21, 0.25, 0.45, 7), wood1, 0, 0.45, 0);
+  addMesh(g, new THREE.TorusGeometry(0.21, 0.03, 5, 10), bone, 0, 0.69, 0).rotation.x = Math.PI / 2;
+  addMesh(g, new THREE.CylinderGeometry(0.17, 0.2, 0.42, 7), wood2, 0, 0.9, 0);
+  for (const s of [1, -1]) {
+    addMesh(g, new THREE.BoxGeometry(0.08, 0.06, 0.04), eyeMat, s * 0.085, 0.95, 0.17);
+    addMesh(g, new THREE.BoxGeometry(0.11, 0.03, 0.04), dark, s * 0.085, 1.0, 0.17).rotation.z = -s * 0.3;
+    addMesh(g, new THREE.BoxGeometry(0.5, 0.09, 0.05), dark, s * 0.4, 0.98, 0).rotation.z = s * 0.55;      // wings
+    addMesh(g, new THREE.BoxGeometry(0.36, 0.07, 0.05), wood1, s * 0.3, 0.84, 0).rotation.z = s * 0.25;
+    addMesh(g, new THREE.ConeGeometry(0.04, 0.26, 5), bone, s * 0.13, 1.2, 0).rotation.z = -s * 0.5;       // horns
+  }
+  addMesh(g, new THREE.BoxGeometry(0.16, 0.05, 0.04), dark, 0, 0.82, 0.18);
+  for (let i = 0; i < 3; i++) addMesh(g, new THREE.ConeGeometry(0.02, 0.05, 4), bone, -0.05 + i * 0.05, 0.84, 0.185).rotation.x = Math.PI;
+  addMesh(g, new THREE.SphereGeometry(0.1, 7, 6), bone, 0, 1.13, 0);
+  g.position.copy(pos); g.position.y = -1.4;
+  g.rotation.y = Math.atan2(camera.position.x - pos.x, camera.position.z - pos.z);
+  const light = new THREE.PointLight(0x6dff6a, 0, 5, 2); light.position.y = 0.9; g.add(light);
+  scene.add(g);
+  addEffect({
+    t: 0,
+    update(dt) {
+      this.t += dt; const t = this.t;
+      const vis = t < 0.45 ? t / 0.45 : t > 3.3 ? Math.max(0, 1 - (t - 3.3) / 0.4) : 1;
+      if (t < 0.45) g.position.y = lerp(-1.4, 0, easings.easeOutBack(t / 0.45));
+      else if (t > 3.3) g.position.y = lerp(0, -1.4, easings.easeInCubic(Math.min(1, (t - 3.3) / 0.4)));
+      const pulse = 0.6 + 0.4 * Math.sin(t * 6);
+      light.intensity = (4 + 6 * pulse) * vis;
+      eyeMat.emissiveIntensity = 1.5 + 1.5 * pulse;
+      return t < 3.75;
+    },
+    dispose() { disposeObject(g); },
+  });
+}
+
+/* --- Fireball orb (grows in the palm, then flies) --- */
+function createFireOrb() {
+  const g = new THREE.Group();
+  const core = new THREE.Mesh(new THREE.IcosahedronGeometry(0.16, 1), new THREE.MeshStandardMaterial({ color: 0xffe9a0, emissive: 0xff8a1a, emissiveIntensity: 2.5, roughness: 0.3, flatShading: true }));
+  const halo = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 8), glowMat(0xff6a10, 0.35));
+  const light = new THREE.PointLight(0xff7a1a, 8, 9, 2);
+  g.add(core, halo, light); g.scale.setScalar(0.01); scene.add(g);
+  return { g, core, halo, light };
+}
+function castFireball(orb) {
+  const from = orb.g.position.clone(), to = getTargetPosition();
+  const ctrl = from.clone().lerp(to, 0.5); ctrl.y += 0.9 + from.distanceTo(to) * 0.08;
+  const dur = 0.42; let t = 0, trailAcc = 0;
+  audio.whoosh();
+  addEffect({
+    update(dt) {
+      t += dt; const u = Math.min(1, t / dur);
+      _v1.copy(from).lerp(ctrl, u); _v2.copy(ctrl).lerp(to, u);
+      orb.g.position.copy(_v1).lerp(_v2, u);
+      trailAcc += dt * 320;
+      while (trailAcc >= 1) {                                           // ember trail
+        trailAcc--;
+        particles.spawn({ position: orb.g.position, jitter: 0.08, velocity: _v3.set(rnd(-0.4, 0.4), rnd(0.2, 0.9), rnd(-0.4, 0.4)), life: [0.35, 0.7], size: [0.12, 0.24], sizeEnd: 0.02, color: 0xffe08a, colorEnd: 0x7a1500, drag: 2 });
+      }
+      orb.core.rotation.x += dt * 6; orb.core.rotation.y += dt * 4;
+      if (u >= 1) { fireballImpact(to); return false; }
+      return true;
+    },
+    dispose() { disposeObject(orb.g); },
+  });
+}
+function fireballImpact(p) {
+  expandingSphere(p, 0xffa040, 1.1, 0.28);
+  expandingSphere(p, 0xfff0b0, 0.6, 0.18);
+  particles.burst({ position: p, count: 150, speed: [2.5, 8], gravity: -9, drag: 1.6, life: [0.5, 1.1], size: [0.12, 0.3], sizeEnd: 0.02, color: 0xffe08a, colorEnd: 0x8a1f00 });
+  particles.burst({ position: p, count: 40, speed: [0.5, 2], dir: UP, spread: 0.6, gravity: 1.2, life: [0.8, 1.4], size: [0.3, 0.5], sizeEnd: 0.6, color: 0xff6a10, colorEnd: 0x201008, alpha: 0.35 });
+  groundRing(_v1.set(p.x, 0, p.z), 0xff7a1a, 0.3, 3.2, 0.6, 0.85, 0.25);
+  groundRing(_v1.set(p.x, 0, p.z), 0xffc070, 0.2, 2.0, 0.45, 0.6, 0.15);
+  flashLight(p, 0xff7a1a, 40, 0.35);
+  addShake(0.35); screenFlash('#ffb070', 0.45);
+  hitDummy(2.2, 'fireball');
+  audio.boom();
+}
+
+/* --- Spell releases --- */
+function castLightning() {
+  const tip = getStaffTipWorldPosition(), target = getTargetPosition();
+  const sky = target.clone().add(_v1.set(rnd(-1.5, 1.5), 9, rnd(-1.5, -0.5)));
+  createBolt(sky, target, 0x5ab4ff);
+  createBolt(tip, target, 0x5ab4ff);
+  particles.burst({ position: target, count: 70, speed: [2, 7], gravity: -6, drag: 2, life: [0.3, 0.7], size: [0.08, 0.2], sizeEnd: 0.01, color: 0xffffff, colorEnd: 0x5ab4ff });
+  particles.burst({ position: tip, count: 30, speed: [1, 4], life: [0.2, 0.5], size: [0.08, 0.18], colorEnd: 0x5ab4ff, color: 0xdff0ff });
+  flashLight(target, 0x8fd3ff, 50, 0.3);
+  addShake(0.3); screenFlash('#cfe8ff', 0.55);
+  hitDummy(1.4, 'lightning');
+  audio.zap();
+}
+function castEarthquake() {
+  const base = getStaffBaseWorldPosition(); base.y = 0;
+  groundRing(base, 0x6dff6a, 0.3, 8, 0.7, 0.9, 0.1);
+  after(0.08, () => groundRing(base, 0xc8a060, 0.2, 6.5, 0.6, 0.6, 0.18));
+  rockSpikes(base, getTargetPosition());
+  particles.burst({ position: _v1.copy(base).setY(0.1), count: 60, dir: UP, spread: 0.3, speed: [1, 4], gravity: -4, drag: 2, life: [0.6, 1.2], size: [0.2, 0.45], sizeEnd: 0.5, color: 0xb0a080, colorEnd: 0x302820, alpha: 0.4 });
+  particles.burst({ position: _v1.copy(base).setY(0.1), count: 30, speed: [2, 6], gravity: -8, life: [0.4, 0.9], size: [0.08, 0.18], sizeEnd: 0.01, color: 0xd0ffd0, colorEnd: 0x3a8a2a });
+  spawnTotem(rig.shaman.localToWorld(new THREE.Vector3(-1.3, 0, 0.5)));
+  flashLight(_v1.copy(base).setY(0.4), 0x6dff6a, 30, 0.4);
+  addShake(0.6);
+  after(0.28, () => hitDummy(3.0, 'earthquake'));
+  audio.rumble();
+}
+
+/* Channel-phase particle emitters (rate-based so they look the same at any frame rate) */
+let sparkAcc = 0, swirlAcc = 0, dustAcc = 0;
+function channelSparks(dt) {
+  sparkAcc += dt * 110;
+  while (sparkAcc >= 1) {
+    sparkAcc--;
+    particles.spawn({ position: getStaffTipWorldPosition(), jitter: 0.1, velocity: _v1.set(rnd(-1.5, 1.5), rnd(-0.5, 2.5), rnd(-1.5, 1.5)), life: [0.15, 0.35], size: [0.06, 0.14], sizeEnd: 0.01, color: 0xeaf6ff, colorEnd: 0x5ab4ff, drag: 2 });
+  }
+}
+function channelFire(dt) {
+  const o = fireOrb; if (!o) return;
+  const k = Math.min(1, castTime / SPELLS.fireball.releaseAt);
+  o.g.scale.setScalar(0.15 + 0.85 * easings.easeOutCubic(k));
+  const palm = rig.leftHand.localToWorld(_v1.set(0, -0.1, 0.1));
+  const n = _v2.set(0, 0, 1).applyQuaternion(rig.leftHand.getWorldQuaternion(_q1));
+  o.g.position.copy(palm).addScaledVector(n, 0.22);
+  o.light.intensity = 6 + rnd(0, 3); o.core.rotation.y += dt * 5;
+  swirlAcc += dt * 300;
+  while (swirlAcc >= 1) {                                               // swirling cloud around the orb
+    swirlAcc--;
+    const a = rnd(6.28), b = rnd(-1, 1), r = Math.sqrt(1 - b * b);
+    _v3.set(Math.cos(a) * r, b, Math.sin(a) * r);
+    particles.spawn({ position: _v1.copy(o.g.position).addScaledVector(_v3, 0.3), velocity: _v3.set(-Math.sin(a) * r * 1.8 - Math.cos(a) * r * 2.5, -b * 2.5 + 0.3, Math.cos(a) * r * 1.8 - Math.sin(a) * r * 2.5), life: [0.25, 0.45], size: [0.1, 0.2], sizeEnd: 0.02, color: 0xffe08a, colorEnd: 0xff5a10, drag: 1 });
+  }
+}
+function channelDust(dt) {
+  dustAcc += dt * 70;
+  while (dustAcc >= 1) {
+    dustAcc--;
+    const a = rnd(Math.PI * 2), r = rnd(1.2, 1.8);
+    particles.spawn({ position: _v1.set(Math.sin(a) * r, 0.05, Math.cos(a) * r), velocity: _v2.set(rnd(-0.1, 0.1), rnd(0.25, 0.6), rnd(-0.1, 0.1)), life: [0.8, 1.4], size: [0.2, 0.4], sizeEnd: 0.5, color: 0x9a8a6a, colorEnd: 0x2a2418, alpha: 0.3, drag: 0.5 });
+  }
+}
+
+/* =====================================================================
+   9. CAMERA SHAKE & SCREEN FLASH
+===================================================================== */
+let shake = 0, flashOpacity = 0;
+const flashEl = document.getElementById('flash');
+function addShake(amount) { shake = Math.max(shake, amount); }
+function screenFlash(css, opacity) { flashEl.style.background = css; flashOpacity = Math.max(flashOpacity, opacity); }
+
+/* =====================================================================
+   10. AUDIO (procedural Web Audio, context created lazily)
+===================================================================== */
+const audio = {
+  ctx: null, master: null, noiseBuf: null,
+  init() {
+    if (this.ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    const ctx = this.ctx = new AC();
+    this.master = ctx.createGain(); this.master.gain.value = 0.5; this.master.connect(ctx.destination);
+    const len = ctx.sampleRate * 2, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    this.noiseBuf = buf;
+  },
+  resume() { if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); },
+  _env(g, t0, peak, attack, dur) {
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0001, peak), t0 + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  },
+  noise({ dur = 0.3, type = 'bandpass', f0 = 1000, f1 = f0, q = 1, gain = 0.3, attack = 0.005, delay = 0 }) {
+    if (!this.ctx) return; const ctx = this.ctx, t0 = ctx.currentTime + delay;
+    const src = ctx.createBufferSource(); src.buffer = this.noiseBuf; src.loop = true;
+    const flt = ctx.createBiquadFilter(); flt.type = type; flt.Q.value = q;
+    flt.frequency.setValueAtTime(f0, t0); flt.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t0 + dur);
+    const g = ctx.createGain(); this._env(g, t0, gain, attack, dur);
+    src.connect(flt).connect(g).connect(this.master); src.start(t0); src.stop(t0 + dur + 0.05);
+  },
+  tone({ type = 'sine', f0 = 440, f1 = f0, dur = 0.3, gain = 0.2, attack = 0.005, delay = 0 }) {
+    if (!this.ctx) return; const ctx = this.ctx, t0 = ctx.currentTime + delay;
+    const o = ctx.createOscillator(); o.type = type;
+    o.frequency.setValueAtTime(f0, t0); o.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t0 + dur);
+    const g = ctx.createGain(); this._env(g, t0, gain, attack, dur);
+    o.connect(g).connect(this.master); o.start(t0); o.stop(t0 + dur + 0.05);
+  },
+  charge(type) {
+    if (type === 'lightning') { this.tone({ type: 'sawtooth', f0: 220, f1: 1800, dur: 0.45, gain: 0.05 }); this.noise({ type: 'highpass', f0: 3000, dur: 0.45, gain: 0.12, attack: 0.3 }); }
+    else if (type === 'fireball') { this.noise({ type: 'bandpass', f0: 200, f1: 1200, q: 0.8, dur: 0.5, gain: 0.18, attack: 0.25 }); this.tone({ type: 'triangle', f0: 90, f1: 160, dur: 0.5, gain: 0.08, attack: 0.2 }); }
+    else { this.noise({ type: 'lowpass', f0: 120, f1: 300, dur: 0.65, gain: 0.25, attack: 0.4 }); this.tone({ type: 'sine', f0: 45, f1: 70, dur: 0.65, gain: 0.2, attack: 0.3 }); }
+  },
+  zap() {
+    this.noise({ type: 'highpass', f0: 2500, dur: 0.3, gain: 0.6, attack: 0.002 });
+    this.tone({ type: 'sawtooth', f0: 2600, f1: 160, dur: 0.25, gain: 0.25, attack: 0.002 });
+    this.tone({ type: 'square', f0: 120, f1: 40, dur: 0.18, gain: 0.3, attack: 0.002 });
+  },
+  whoosh() { this.noise({ type: 'bandpass', f0: 300, f1: 2200, q: 1.2, dur: 0.4, gain: 0.35, attack: 0.08 }); },
+  boom() { this.tone({ type: 'sine', f0: 160, f1: 32, dur: 0.6, gain: 0.9, attack: 0.005 }); this.noise({ type: 'lowpass', f0: 900, f1: 120, dur: 0.55, gain: 0.5 }); },
+  rumble() {
+    this.noise({ type: 'lowpass', f0: 220, f1: 60, dur: 1.5, gain: 0.55, attack: 0.06 });
+    this.tone({ type: 'sine', f0: 110, f1: 26, dur: 0.45, gain: 0.9, attack: 0.004 });
+    this.noise({ type: 'bandpass', f0: 700, f1: 200, q: 0.7, dur: 0.25, gain: 0.35, attack: 0.003 });
+  },
+  deny() { this.tone({ type: 'square', f0: 160, f1: 110, dur: 0.14, gain: 0.12 }); },
+};
+for (const ev of ['pointerdown', 'keydown']) window.addEventListener(ev, () => { audio.init(); audio.resume(); }, { passive: true });
+
+/* =====================================================================
+   11. UI (spell bar, mana, cooldowns, damage numbers)
+===================================================================== */
+const manaEl = document.getElementById('mana'), manaFill = document.getElementById('mana-fill'), manaText = document.getElementById('mana-text');
+const floatersLayer = document.getElementById('floaters');
+const floaters = [];
+let mana = MANA_MAX;
+const cooldowns = { lightning: 0, fireball: 0, earthquake: 0 };
+
+function setupUI() {
+  const bar = document.getElementById('spellbar');
+  for (const [type, s] of Object.entries(SPELLS)) {
+    const b = document.createElement('button');
+    b.className = 'spell'; b.style.setProperty('--c', s.css); b.setAttribute('aria-label', s.name);
+    b.innerHTML = `<span class="key">${s.hotkey}</span><span class="cost">${s.cost}</span><span class="icon">${s.icon}</span><span class="name">${s.name}</span><div class="cd"></div><span class="cd-num"></span>`;
+    b.addEventListener('click', () => castSpell(type));
+    bar.appendChild(b);
+    s.el = b; s.numEl = b.querySelector('.cd-num');
+  }
+  window.addEventListener('keydown', e => {
+    if (e.repeat) return;
+    const k = e.key.toLowerCase();
+    for (const [type, s] of Object.entries(SPELLS)) if (k === s.hotkey || k === s.altKey) { castSpell(type); break; }
+  });
+}
+function denyMana(type) {
+  const b = SPELLS[type].el;
+  for (const el of [b, manaEl]) { el.classList.remove('deny'); void el.offsetWidth; el.classList.add('deny'); }
+  setTimeout(() => b.classList.remove('deny'), 500);
+  audio.deny();
+}
+function spawnFloater(worldPos, text, css, crit) {
+  const el = document.createElement('div');
+  el.className = 'dmg' + (crit ? ' crit' : ''); el.textContent = text; el.style.color = css;
+  floatersLayer.appendChild(el);
+  floaters.push({ el, pos: worldPos.clone().add(_v1.set(rnd(-0.2, 0.2), 0.2, 0)), t: 0, crit });
+}
+function updateFloaters(dt) {
+  for (let i = floaters.length - 1; i >= 0; i--) {
+    const f = floaters[i]; f.t += dt;
+    if (f.t > 0.95) { f.el.remove(); floaters.splice(i, 1); continue; }
+    _v1.copy(f.pos); _v1.y += f.t * 0.9; _v1.project(camera);
+    f.el.style.left = ((_v1.x * 0.5 + 0.5) * window.innerWidth) + 'px';
+    f.el.style.top = ((-_v1.y * 0.5 + 0.5) * window.innerHeight) + 'px';
+    const k = f.t / 0.95;
+    f.el.style.opacity = k < 0.6 ? '1' : String(1 - (k - 0.6) / 0.4);
+    f.el.style.transform = `translate(-50%, -50%) scale(${(f.crit ? 1.15 : 1) * (1 + 0.5 * Math.max(0, 1 - f.t / 0.15))})`;
+  }
+}
+function updateUI(dt) {
+  mana = Math.min(MANA_MAX, mana + MANA_REGEN * dt);
+  manaFill.style.width = (mana / MANA_MAX * 100) + '%';
+  manaText.textContent = `${Math.floor(mana)} / ${MANA_MAX}`;
+  manaEl.classList.toggle('low', mana < 20);
+  for (const [type, s] of Object.entries(SPELLS)) {
+    if (cooldowns[type] > 0) {
+      cooldowns[type] = Math.max(0, cooldowns[type] - dt);
+      s.el.classList.add('on-cd');
+      s.el.style.setProperty('--p', (cooldowns[type] / s.cooldown).toFixed(3));
+      s.numEl.textContent = cooldowns[type] >= 1 ? Math.ceil(cooldowns[type]) : cooldowns[type].toFixed(1);
+    } else s.el.classList.remove('on-cd');
+    s.el.classList.toggle('no-mana', mana < s.cost);
+  }
+}
+
+/* =====================================================================
+   12. CASTING STATE MACHINE
+===================================================================== */
+let isCasting = false, castTime = 0, currentSpell = null, released = false, fireOrb = null;
+let freezeTime = null;                                   // debug: freeze the cast at a given time
+const crystalColor = IDLE_COLOR.clone(), crystalTarget = IDLE_COLOR.clone();
+let castGlow = 0, idleW = 1;
+
+function castSpell(type) {
+  const s = SPELLS[type]; if (!s) return;
+  if (isCasting) return;                                 // one cast at a time (press is simply ignored)
+  if (cooldowns[type] > 0) return;
+  if (mana < s.cost) { denyMana(type); return; }
+  mana -= s.cost; cooldowns[type] = s.cooldown;
+  isCasting = true; castTime = 0; currentSpell = type; released = false;
+  crystalTarget.set(s.color);
+  audio.charge(type);
+  if (type === 'fireball') fireOrb = createFireOrb();
+}
+function updateCasting(dt) {
+  if (isCasting) {
+    castTime = freezeTime ?? castTime + dt;
+    const s = SPELLS[currentSpell];
+    applyPose(sampleClip(CLIPS[currentSpell], castTime));
+    if (!released) {
+      if (currentSpell === 'lightning') channelSparks(dt);
+      else if (currentSpell === 'fireball') channelFire(dt);
+      else channelDust(dt);
+      if (castTime >= s.releaseAt) {
+        released = true;
+        if (currentSpell === 'lightning') castLightning();
+        else if (currentSpell === 'fireball') castFireball(fireOrb);
+        else castEarthquake();
+      }
+    }
+    if (castTime >= s.duration && freezeTime === null) { isCasting = false; currentSpell = null; applyPose({}); crystalTarget.copy(IDLE_COLOR); }
+  } else {
+    applyPose({}); crystalTarget.copy(IDLE_COLOR);
+  }
+  castGlow += ((isCasting ? 1 : 0) - castGlow) * Math.min(1, dt * 10);
+  idleW += ((isCasting ? 0 : 1) - idleW) * Math.min(1, dt * 6);
+}
+
+/* =====================================================================
+   13. IDLE ANIMATION
+===================================================================== */
+function updateIdle(t, dt, w) {
+  if (w > 0.001) {
+    const breathe = Math.sin(t * 1.5);
+    const tilt = Math.pow(Math.max(0, Math.sin(t * 0.31 + 0.7)), 10);   // occasional head tilt
+    rig.root.rotateX(breathe * 0.012 * w); rig.root.position.y += breathe * 0.008 * w;
+    rig.torso.rotateX(breathe * 0.025 * w); rig.torso.rotateZ(Math.sin(t * 0.7) * 0.02 * w);
+    rig.torso.scale.y = 1 + breathe * 0.012 * w;
+    rig.head.rotateY(Math.sin(t * 0.6) * 0.14 * w); rig.head.rotateZ(Math.sin(t * 0.45 + 1) * 0.05 * w + tilt * 0.2 * w); rig.head.rotateX(Math.sin(t * 0.8 + 2) * 0.04 * w);
+    rig.leftArm.rotateX(Math.sin(t * 1.1 + 1) * 0.03 * w); rig.leftArm.rotateZ(Math.sin(t * 0.9) * 0.03 * w);
+    rig.rightArm.rotateX(Math.sin(t * 1.1 + 2) * 0.02 * w); rig.rightArm.rotateZ(Math.sin(t * 0.9 + 1) * 0.02 * w);
+    rig.leftForearm.rotateX(Math.sin(t * 0.7 + 0.5) * 0.04 * w);
+    rig.rightForearm.rotateX(Math.sin(t * 0.7 + 1.5) * 0.03 * w);
+  }
+  // Crystal: rotate, bob, pulse; colour follows the current spell
+  const c = rig.crystal;
+  c.rotation.y += 0.9 * dt; c.rotation.x = Math.sin(t * 0.6) * 0.15; c.position.y = 1.3 + Math.sin(t * 1.4) * 0.03;
+  crystalColor.lerp(crystalTarget, 0.12);
+  const pulse = 0.5 + 0.5 * Math.sin(t * 2.4);
+  const flicker = castGlow > 0.5 ? rnd(0.7, 1.3) : 1;
+  rig.crystalLight.color.copy(crystalColor);
+  rig.crystalLight.intensity = lerp(3.5 + pulse * 1.2, 8 * flicker, castGlow);
+  rig.crystalMat.emissive.copy(crystalColor); rig.crystalMat.emissiveIntensity = lerp(1.3, 2.8, castGlow);
+  rig.halo.material.color.copy(crystalColor); rig.halo.material.opacity = lerp(0.4 + pulse * 0.15, 0.8, castGlow);
+  rig.halo.scale.setScalar(lerp(0.9, 1.3, castGlow));
+  for (const m of eyeMats) m.emissive.copy(crystalColor);
+  ritualRing.material.color.copy(crystalColor);
+  ritualRing.material.opacity = 0.16 + pulse * 0.1 + castGlow * 0.3;
+  ritualRing2.rotation.z = t * 0.1;
+  // Feathers & beads sway
+  for (const s of swayers) {
+    s.obj.rotation.x = s.base.x + Math.cos(t * 1.7 + s.phase) * s.amp;
+    s.obj.rotation.z = s.base.z + Math.sin(t * 2.1 + s.phase) * s.amp;
+  }
+  // Campfire flicker + flames
+  fireLight.intensity = 8 + Math.sin(t * 13.1) * 1.0 + Math.sin(t * 29.7) * 0.6 + Math.sin(t * 7.3) * 0.5 + rnd(-0.3, 0.3);
+  updateWisps(t, dt);
+}
+
+/* =====================================================================
+   14. MAIN LOOP
+===================================================================== */
+const clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const t = clock.elapsedTime;
+
+  updateCasting(dt);
+  updateIdle(t, dt, idleW);
+  rig.shaman.updateMatrixWorld(true);
+  updateDummy(dt);
+  updateEffects(dt);
+
+  // Campfire emission
+  fireAccum += dt * 40;
+  while (fireAccum >= 1) {
+    fireAccum -= 1;
+    particles.spawn({ position: firePos, jitter: 0.18, velocity: _v1.set(rnd(-0.25, 0.25), rnd(0.9, 1.6), rnd(-0.25, 0.25)), life: [0.45, 0.85], size: [0.22, 0.4], sizeEnd: 0.03, color: 0xffd36a, colorEnd: 0xff3a08, drag: 0.8, gravity: 0.4 });
+  }
+  sparkAccum += dt * 3;
+  while (sparkAccum >= 1) {
+    sparkAccum -= 1;
+    particles.spawn({ position: firePos, jitter: 0.15, velocity: _v1.set(rnd(-0.5, 0.5), rnd(1.4, 2.6), rnd(-0.5, 0.5)), life: [0.8, 1.6], size: 0.07, sizeEnd: 0.01, color: 0xffb060, colorEnd: 0xff4010, drag: 0.6 });
+  }
+  particles.update(dt);
+
+  updateUI(dt);
+  updateFloaters(dt);
+  if (flashOpacity > 0) { flashOpacity = Math.max(0, flashOpacity - dt * 3.5); flashEl.style.opacity = flashOpacity; }
+
+  controls.update();
+  if (shake > 0.001) {
+    shake *= Math.exp(-dt * 9);
+    _v1.set(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).multiplyScalar(shake * 0.12).applyQuaternion(camera.quaternion);
+    camera.position.add(_v1);
+    renderer.render(scene, camera);
+    camera.position.sub(_v1);
+  } else renderer.render(scene, camera);
+}
+
+/* =====================================================================
+   15. BOOT
+===================================================================== */
+function onResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  particles.material.uniforms.uScale.value = renderer.domElement.height / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2));
+}
+window.addEventListener('resize', onResize);
+
+const shaman = createShaman();
+for (const c of Object.values(CLIPS)) resolveClip(c);
+setupLights();
+createDummy();
+createEnvironment();
+createWisps();
+setupUI();
+onResize();
+scene.updateMatrixWorld(true);
+animate();
+
+const loading = document.getElementById('loading');
+requestAnimationFrame(() => { loading.style.opacity = '0'; setTimeout(() => loading.remove(), 600); });
+
+/* Small public hooks (handy from the console) */
+window.ork = { THREE, scene, camera, controls, rig, restQuat, audio, castSpell, getStaffTipWorldPosition, getTargetPosition,
+  freeze: (spell, time, withEffects = false) => { freezeTime = time; castSpell(spell); if (!withEffects) released = true; } };
+</script>
+</body>
+</html>

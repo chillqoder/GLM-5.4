@@ -1,0 +1,106 @@
+// Authoritative tuning values. All distances are world units, times in seconds.
+export const FIXED_STEP = 1 / 120;
+export const MAX_FRAME_DT = 0.1; // capped accumulator: never simulate more than this per frame
+
+export const TUNING = {
+  player: {
+    width: 0.75,
+    height: 1.5,
+    maxSpeed: 6.5,
+    carrySpeed: 4.5,
+    groundAccel: 42,
+    airAccel: 28,
+    groundBrake: 38,
+    airBrake: 8,
+    gravity: 32,
+    jumpSpeed: 13,
+    fallLimit: 24,
+    coyote: 0.11,
+    jumpBuffer: 0.14,
+    wallSlideLimit: 3,
+    wallJumpX: 7,
+    wallJumpY: 12.5,
+    wallLock: 0.1,
+    wallCoyote: 0.1,
+    minJumpTime: 0.08, // release before this still yields a ~1.35 unit hop
+    jumpCut: 0.5,
+    stepLength: 0.95, // distance per footstep
+  },
+  dash: {
+    speed: 15,
+    duration: 0.16,
+    cooldown: 0.45,
+    exitSpeed: 7,
+  },
+  pulse: {
+    cost: 35,
+    cooldown: 0.7,
+    regenDelay: 1.5,
+    regen: 20,
+    radius: 6,
+    duration: 0.35,
+    highlight: 5,
+    energyMax: 100,
+  },
+  shield: { cost: 50, immunity: 0.8 },
+  damage: { immunity: 1.2, knockbackX: 6, knockbackY: 5 },
+  integrityMax: 3,
+  interactRange: 1.3,
+  consoleRange: 1.7,
+  cell: { width: 0.8, height: 1.0, placeDistance: 1.0 },
+  recovery: {
+    shutdownTime: 1.2,
+    retryShutdownTime: 0.5,
+    rebootTime: 0.9,
+    contactImmunity: 1.0,
+    crushTime: 0.25,
+  },
+  relayCinematic: 2.4,
+  shutterSpeed: 6, // units per second of travel between closed and open positions
+  killY: -13,
+  skitter: {
+    speed: 1.4,
+    detectRange: 5,
+    alertTime: 0.35,
+    telegraph: 0.5,
+    lungeSpeed: 9,
+    lungeTime: 0.45,
+    recover: 0.8,
+    stun: 2,
+    width: 1.2,
+    height: 0.6,
+    activateRange: 16,
+  },
+  drone: {
+    speed: 1.6,
+    detectRange: 5,
+    aimTime: 0.8,
+    trackFraction: 0.5, // the line follows ILO for this fraction of the aim, then locks
+    boltSpeed: 6,
+    boltLife: 3,
+    cooldown: 2.2,
+    stun: 2.5,
+    size: 0.8,
+    activateRange: 20,
+  },
+  sentinel: {
+    closed: 1.5,
+    warning: 0.9,
+    firing: 0.35,
+    venting: 2.0,
+    activateRange: 18,
+    laneHeight: 0.8,
+  },
+  vent: { dormant: 2.0, warning: 0.7, active: 1.1, activateRange: 14, height: 3.5 },
+};
+
+export const STATE = Object.freeze({
+  TITLE: 'title',
+  PLAY: 'play',
+  PAUSED: 'paused',
+  RELAY: 'relayActivation',
+  SHUTDOWN: 'shutdown',
+  REBOOT: 'reboot',
+  LIFT: 'liftSequence',
+  COMPLETE: 'complete',
+});

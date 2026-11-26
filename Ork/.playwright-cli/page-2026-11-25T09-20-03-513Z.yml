@@ -1,0 +1,8 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic:
+      - heading "Orc Shaman" [level=1]
+      - paragraph: Spirits of the Storm
+    - generic: Drag to rotate · Scroll to zoom · 1/2/3 or Q/W/E to cast
+    - generic [ref=e3]: 100 / 100
+  - generic: Could not load Three.js from the CDN — check your internet connection and reload.

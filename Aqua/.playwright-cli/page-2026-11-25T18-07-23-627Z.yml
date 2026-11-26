@@ -1,0 +1,11 @@
+- generic [active] [ref=f79e1]:
+  - generic "Living 3D aquarium" [ref=f79e2]
+  - status: Filling the aquarium…
+  - generic:
+    - generic [aria-hidden]:
+      - strong: Living Glass
+      - generic: Aquarium
+    - generic: Drag to orbit · Scroll to zoom · Right-drag to pan
+    - generic [ref=f79e4]:
+      - button "Reset view" [ref=f79e5] [cursor=pointer]
+      - button "Pause animation" [ref=f79e6] [cursor=pointer]: Pause

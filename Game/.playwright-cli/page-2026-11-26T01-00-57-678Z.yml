@@ -1,0 +1,19 @@
+- generic [ref=f4e2]:
+  - generic "DEEPWAKE game view" [ref=f4e3]
+  - generic:
+    - generic: Integrity
+    - generic:
+      - generic: Resonance
+      - generic: "100"
+    - generic:
+      - generic: Relays
+      - generic:
+        - 'generic "Relay A: offline"': A
+        - 'generic "Relay B: offline"': B
+        - 'generic "Relay C: offline"': C
+    - generic:
+      - generic: Archives
+      - generic: 0 / 3
+  - generic [ref=f4e4]:
+    - button "Mute audio" [ref=f4e5] [cursor=pointer]: ♪
+    - button "Pause game" [ref=f4e6] [cursor=pointer]: ❚❚

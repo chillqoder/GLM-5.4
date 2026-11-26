@@ -1,0 +1,4 @@
+[     585ms] TypeError: Cannot read properties of undefined (reading 'quaternion')
+    at createShaman (http://localhost:8765/index.html:504:48)
+    at http://localhost:8765/index.html:1365:16
+[     590ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8765/favicon.ico:0

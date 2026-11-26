@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Rough Idea — Rough ideas in. Working software out.</title>
+  <meta name="description" content="Rough Idea is a small software studio that turns half-formed ideas into working software: websites, web apps, automation, integrations, MVPs and SaaS. AI does the typing. We do the thinking.">
+  <meta name="theme-color" content="#1848DC">
+  <meta property="og:title" content="Rough Idea — Rough ideas in. Working software out.">
+  <meta property="og:description" content="A small software studio for people who have a rough idea. Websites, web apps, automation, MVPs and SaaS — shipped in weeks.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- the 3D tape: one strip of real geometry, simulated and rendered in real time -->
+  <canvas id="tape" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="nav" id="nav" data-on="dark">
+    <a class="nav__brand" href="#top" aria-label="Rough Idea — back to top">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 21.5c3.2-9 9.6-15 15-13.2 4.4 1.5 3.2 8.2-1.8 9.4-5.4 1.3-8.6-4.6-4.6-8.6C15.6 5 23.4 4.6 29 8.6" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Rough Idea</span>
+    </a>
+    <nav class="nav__links mono" aria-label="Sections">
+      <a href="#build"><sup>01</sup>Build</a>
+      <a href="#method"><sup>02</sup>Method</a>
+      <a href="#concepts"><sup>03</sup>Concepts</a>
+      <a href="#cost"><sup>04</sup>Cost</a>
+      <a href="#faq"><sup>06</sup>FAQ</a>
+    </nav>
+    <a class="btn" href="#start">Start a project</a>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu"><i aria-hidden="true"></i><span>Menu</span></button>
+  </header>
+
+  <nav class="rail" id="rail" aria-label="Progress">
+    <a href="#top"><span>Intro</span></a>
+    <a href="#build"><span>What we build</span></a>
+    <a href="#method"><span>How it works</span></a>
+    <a href="#concepts"><span>Concepts</span></a>
+    <a href="#cost"><span>The rough number</span></a>
+    <a href="#ways"><span>Ways to work</span></a>
+    <a href="#faq"><span>Fair questions</span></a>
+    <a href="#start"><span>Start something</span></a>
+  </nav>
+  <div class="chip mono" aria-hidden="true">
+    <span class="chip__dot"></span><span class="chip__num">01 / 08</span><span class="chip__name">Intro</span>
+  </div>
+
+  <div class="menu" id="menu">
+    <nav aria-label="Menu">
+      <a href="#build"><span class="mono">01</span>What we build</a>
+      <a href="#method"><span class="mono">02</span>How it works</a>
+      <a href="#concepts"><span class="mono">03</span>Concepts</a>
+      <a href="#cost"><span class="mono">04</span>The rough number</a>
+      <a href="#ways"><span class="mono">05</span>Ways to work</a>
+      <a href="#faq"><span class="mono">06</span>Fair questions</a>
+      <a href="#start"><span class="mono">07</span>Start something</a>
+    </nav>
+    <div class="menu__foot mono">
+      <a href="mailto:hello@roughidea.studio">hello@roughidea.studio</a>
+      <span>Remote · worldwide</span>
+    </div>
+  </div>
+
+  <main id="main">
+
+    <!-- 01 · hero -->
+    <section class="s s--hero s--dark" id="top">
+      <div class="ribbon-anchor anchor--hero" data-anchor="hero" aria-hidden="true"></div>
+      <div class="wrap hero">
+        <div class="hero__meta mono above reveal" style="--d:6">
+          <span>Software studio</span>
+          <span>AI-assisted, human-led</span>
+          <span>Est. 2021 · Remote</span>
+        </div>
+        <h1 class="hero__title">
+          <span class="l"><span class="mask"><span class="w" style="--i:0">Rough</span></span> <span class="mask"><span class="w" style="--i:1">idea</span></span> <span class="mask"><em class="w" style="--i:2">in.</em></span></span>
+          <span class="l"><span class="mask"><span class="w" style="--i:3">Working</span></span> <span class="mask"><span class="w" style="--i:4">software</span></span> <span class="mask"><em class="w" style="--i:5">out.</em></span></span>
+        </h1>
+        <div class="hero__foot">
+          <div class="hero__pitch reveal" style="--d:5">
+            <p class="lede">We’re a small studio that turns half-formed ideas into shipped software: websites, web apps, automations, MVPs. <strong>You talk. AI types. We make the calls.</strong></p>
+            <div class="cta-row">
+              <a class="btn" href="#start">Start a project<svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></a>
+              <a class="link-arrow" href="#method">See how it works</a>
+            </div>
+          </div>
+          <ul class="hero__index mono reveal" style="--d:7" aria-label="What we build">
+            <li><a href="#build">Websites</a></li>
+            <li><a href="#build">Web apps</a></li>
+            <li><a href="#build">Automation</a></li>
+            <li><a href="#build">Integrations</a></li>
+            <li><a href="#build">MVPs</a></li>
+            <li><a href="#build">SaaS</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 · what we build -->
+    <section class="s s--build" id="build">
+      <div class="wrap build">
+        <div class="build__intro">
+          <header class="shead">
+            <p class="label mono reveal">01 — What we build</p>
+            <h2 class="reveal" style="--d:1">What we <em>build.</em></h2>
+            <p class="shead__intro reveal" style="--d:2">If it runs in a browser — or saves you from living in one — we build it. Run your cursor down the list; the tape already knows each shape.</p>
+          </header>
+          <div class="ribbon-anchor anchor--glyph" data-anchor="glyph" aria-hidden="true"></div>
+        </div>
+
+        <div class="svc-hud" aria-hidden="true">
+          <div class="ribbon-anchor anchor--glyph" data-anchor="glyph"></div>
+          <div><span class="svc-hud__num mono">01</span><span class="svc-hud__t svc-hud__name">Websites</span></div>
+        </div>
+
+        <ol class="svc">
+          <li class="svc__row reveal">
+            <h3 class="svc__h"><button class="svc__head" type="button" aria-expanded="true" aria-controls="svc-p0" id="svc-b0">
+              <span class="svc__num mono">01</span><span class="svc__name">Websites</span><span class="svc__meta mono">1–3 weeks</span>
+            </button></h3>
+            <div class="svc__panel" id="svc-p0" role="region" aria-labelledby="svc-b0"><div>
+              <div class="svc__body"><p>Marketing sites, portfolios, storefronts. Fast to load, odd in the right places, impossible to mistake for a template.</p><p class="svc__from mono">From $3,500 · fixed price</p></div>
+            </div></div>
+          </li>
+          <li class="svc__row reveal" style="--d:1">
+            <h3 class="svc__h"><button class="svc__head" type="button" aria-expanded="true" aria-controls="svc-p1" id="svc-b1">
+              <span class="svc__num mono">02</span><span class="svc__name">Web apps</span><span class="svc__meta mono">3–8 weeks</span>
+            </button></h3>
+            <div class="svc__panel" id="svc-p1" role="region" aria-labelledby="svc-b1"><div>
+              <div class="svc__body"><p>Customer portals, dashboards, internal tools. The thing your team keeps doing in a spreadsheet because the software doesn’t exist yet.</p><p class="svc__from mono">From $12,000 · fixed price</p></div>
+            </div></div>
+          </li>
+          <li class="svc__row reveal" style="--d:2">
+            <h3 class="svc__h"><button class="svc__head" type="button" aria-expanded="true" aria-controls="svc-p2" id="svc-b2">
+              <span class="svc__num mono">03</span><span class="svc__name">Automation</span><span class="svc__meta mono">1–2 weeks</span>
+            </button></h3>
+            <div class="svc__panel" id="svc-p2" role="region" aria-labelledby="svc-b2"><div>
+              <div class="svc__body"><p>Invoices that send themselves. Reports that write themselves. The boring parts, quietly removed.</p><p class="svc__from mono">From $4,000 · fixed price</p></div>
+            </div></div>
+          </li>
+          <li class="svc__row reveal" style="--d:3">
+            <h3 class="svc__h"><button class="svc__head" type="button" aria-expanded="true" aria-controls="svc-p3" id="svc-b3">
+              <span class="svc__num mono">04</span><span class="svc__name">Integrations</span><span class="svc__meta mono">1–3 weeks</span>
+            </button></h3>
+            <div class="svc__panel" id="svc-p3" role="region" aria-labelledby="svc-b3"><div>
+              <div class="svc__body"><p>Your CRM, your calendar, your accountant: finally on speaking terms. We wire up the tools you already pay for.</p><p class="svc__from mono">From $5,000 · fixed price</p></div>
+            </div></div>
+          </li>
+          <li class="svc__row reveal" style="--d:4">
+            <h3 class="svc__h"><button class="svc__head" type="button" aria-expanded="true" aria-controls="svc-p4" id="svc-b4">
+              <span class="svc__num mono">05</span><span class="svc__name">MVPs</span><span class="svc__meta mono">2–6 weeks</span>
+            </button></h3>
+            <div class="svc__panel" id="svc-p4" role="region" aria-labelledby="svc-b4"><div>
+              <div class="svc__body"><p>The smallest version that proves the point. Built to learn from, not to impress a board.</p><p class="svc__from mono">From $14,000 · fixed price</p></div>
+            </div></div>
+          </li>
+          <li class="svc__row reveal" style="--d:5">
+            <h3 class="svc__h"><button class="svc__head" type="button" aria-expanded="true" aria-controls="svc-p5" id="svc-b5">
+              <span class="svc__num mono">06</span><span class="svc__name">SaaS</span><span class="svc__meta mono">6–12 weeks</span>
+            </button></h3>
+            <div class="svc__panel" id="svc-p5" role="region" aria-labelledby="svc-b5"><div>
+              <div class="svc__body"><p>From idea to paying customers: accounts, billing, onboarding, the works. Then we stay for the next hundred improvements.</p><p class="svc__from mono">From $28,000 · fixed price</p></div>
+            </div></div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 03 · how it works -->
+    <section class="s s--method" id="method">
+      <div class="wrap">
+        <header class="shead">
+          <p class="label mono reveal">02 — How it works</p>
+          <h2 class="reveal" style="--d:1">From <em>rough</em> to running<br>in six weeks.</h2>
+          <p class="shead__intro reveal" style="--d:2">No discovery phase that outlives your enthusiasm. Here is the whole process, loop by loop.</p>
+        </header>
+
+        <div class="track"><div class="ribbon-anchor anchor--track" data-anchor="track" aria-hidden="true"></div></div>
+
+        <ol class="steps">
+          <li class="step reveal"><p class="step__when mono">Step 01 · Day 1</p><h3>Listen</h3><p>A 45-minute call. You explain the idea in your own words; we ask the awkward questions. By the next day you have a one-page plan and a fixed price.</p></li>
+          <li class="step reveal" style="--d:1"><p class="step__when mono">Step 02 · Week 1</p><h3>Sketch</h3><p>Clickable screens before any real code. You’ll hate some of it. That’s the point: it’s cheap to change now.</p></li>
+          <li class="step reveal" style="--d:2"><p class="step__when mono">Step 03 · Weeks 2–5</p><h3>Build</h3><p>One-week sprints. AI writes the first draft of everything; we review, refactor and delete most of it. Every Friday you get a working link.</p></li>
+          <li class="step reveal" style="--d:3"><p class="step__when mono">Step 04 · Week 6</p><h3>Ship</h3><p>Launch, handover, and documentation your future self will thank you for. Then we stay on call.</p></li>
+        </ol>
+
+        <div class="duties">
+          <figure class="duties__fig reveal">
+            <img src="assets/img/studio-typewriter.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt="Paper sculpture of a blue typewriter with a yellow paper ribbon feeding out of its roller">
+            <figcaption class="mono">The typing department. It never sleeps, and it has no opinions.</figcaption>
+          </figure>
+          <div class="duties__cols">
+            <div class="duty reveal"><h4>The models <em>type.</em></h4><p>First drafts, boilerplate, tests, migrations. The parts nobody remembers writing.</p></div>
+            <div class="duty reveal" style="--d:1"><h4>We <em>think.</em></h4><p>Architecture, taste, scope, the awkward questions. The last 10% that takes 50% of the time.</p></div>
+            <div class="duty reveal" style="--d:2"><h4>You <em>decide.</em></h4><p>Feedback every Friday. Yes or no. And the moment it goes live.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 · concepts -->
+    <section class="s s--concepts" id="concepts">
+      <div class="marquee mono" aria-hidden="true">
+        <div class="marquee__track">
+          <span>Concepts, not client work</span><span>Self-initiated</span><span>Made to learn</span><span>Shown as evidence</span><span>Concepts, not client work</span><span>Self-initiated</span>
+          <span>Concepts, not client work</span><span>Self-initiated</span><span>Made to learn</span><span>Shown as evidence</span><span>Concepts, not client work</span><span>Self-initiated</span>
+        </div>
+      </div>
+      <div class="wrap">
+        <header class="shead">
+          <p class="label mono reveal">03 — Concepts</p>
+          <h2 class="reveal" style="--d:1">Ideas we gave <em>ourselves.</em></h2>
+          <p class="shead__intro reveal" style="--d:2">Problems we couldn’t stop thinking about, designed and prototyped on our own time. Taped here as evidence. Tap a print for the story.</p>
+        </header>
+
+        <div class="collage">
+          <figure class="cell cell--a">
+            <button class="print reveal reveal--fade" type="button" data-concept="0" aria-haspopup="dialog" aria-label="Open the concept: Crumb, pre-order and pickup for a bakery">
+              <img src="assets/img/concept-crumb.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt="Paper sculpture of a croissant on a chrome-yellow background, wrapped in a blue paper ribbon">
+            </button>
+            <figcaption><h3>Crumb</h3><p class="mono">Web app · 2025</p><p class="cell__t">Pre-order and pickup for a two-person bakery.</p></figcaption>
+          </figure>
+          <figure class="cell cell--b">
+            <button class="print reveal reveal--fade" type="button" data-concept="1" aria-haspopup="dialog" aria-label="Open the concept: Tally, an invoice chaser for freelancers">
+              <img src="assets/img/concept-tally.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt="Paper calculator on a cobalt-blue background, threaded with a yellow paper ribbon">
+            </button>
+            <figcaption><h3>Tally</h3><p class="mono">Automation · 2024</p><p class="cell__t">An invoice chaser for freelancers who hate asking.</p></figcaption>
+          </figure>
+
+          <a class="slot reveal" href="#start">
+            <span class="slot__k mono">Open slot</span>
+            <span class="slot__t">Your idea here</span>
+            <svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg>
+          </a>
+
+          <figure class="cell cell--c">
+            <button class="print reveal reveal--fade" type="button" data-concept="2" aria-haspopup="dialog" aria-label="Open the concept: Plot, bed booking for a community garden">
+              <img src="assets/img/concept-plot.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt="Paper watering can and seedling pots on a leaf-green background, wound with a red paper ribbon">
+            </button>
+            <figcaption><h3>Plot</h3><p class="mono">Website + booking · 2024</p><p class="cell__t">Bed booking for a community garden.</p></figcaption>
+          </figure>
+          <figure class="cell cell--d">
+            <button class="print reveal reveal--fade" type="button" data-concept="3" aria-haspopup="dialog" aria-label="Open the concept: Fleet, job scheduling for a cleaning crew">
+              <img src="assets/img/concept-fleet.jpg" width="1024" height="1024" loading="lazy" decoding="async" alt="Paper delivery van on a hot-pink background, trailing a green paper ribbon">
+            </button>
+            <figcaption><h3>Fleet</h3><p class="mono">SaaS · 2025</p><p class="cell__t">Job scheduling for a twelve-person cleaning crew.</p></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 · the rough number -->
+    <section class="s s--cost" id="cost">
+      <div class="wrap cost">
+        <form class="cost__form" id="est" aria-label="Rough estimate calculator">
+          <p class="label mono reveal">04 — The rough number</p>
+          <h2 class="reveal" style="--d:1">Roughly, <em>what’ll it cost?</em></h2>
+          <p class="shead__intro reveal" style="--d:2">A ballpark before anybody emails anybody. Move the controls; we’ll do the arithmetic. The tape is the gauge.</p>
+
+          <fieldset class="ctl reveal">
+            <legend class="mono">What are we building?</legend>
+            <div class="seg">
+              <label><input type="radio" name="type" value="website"><span>Website</span></label>
+              <label><input type="radio" name="type" value="webapp" checked><span>Web app</span></label>
+              <label><input type="radio" name="type" value="automation"><span>Automation</span></label>
+              <label><input type="radio" name="type" value="integration"><span>Integration</span></label>
+              <label><input type="radio" name="type" value="mvp"><span>MVP</span></label>
+              <label><input type="radio" name="type" value="saas"><span>SaaS</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="ctl ctl--line reveal">
+            <legend class="mono">How big?</legend>
+            <input type="range" name="size" min="1" max="5" step="1" value="2" aria-label="Size, from tiny to ambitious">
+            <div class="ticks mono"><span>Tiny</span><span>Small</span><span>Standard</span><span>Serious</span><span>Ambitious</span></div>
+          </fieldset>
+
+          <fieldset class="ctl ctl--line reveal">
+            <legend class="mono">How many integrations?</legend>
+            <div class="stepper">
+              <button type="button" data-step="-1" aria-label="Fewer integrations">−</button>
+              <output id="est-int" aria-live="polite">1</output>
+              <button type="button" data-step="1" aria-label="More integrations">+</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="ctl reveal">
+            <legend class="mono">Who designs it?</legend>
+            <div class="seg">
+              <label><input type="radio" name="design" value="studio" checked><span>You design it</span></label>
+              <label><input type="radio" name="design" value="own"><span>We have designs</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="ctl reveal">
+            <legend class="mono">Pace</legend>
+            <div class="seg">
+              <label><input type="radio" name="pace" value="standard" checked><span>Standard</span></label>
+              <label><input type="radio" name="pace" value="rush"><span>Rush, +35%</span></label>
+            </div>
+          </fieldset>
+        </form>
+
+        <div class="cost__out">
+          <div class="ribbon-anchor anchor--gauge" data-anchor="gauge" aria-hidden="true"></div>
+          <div class="quote reveal">
+            <p class="quote__k mono">Ballpark</p>
+            <p class="quote__price"><span id="est-low">$9k</span> – <span id="est-high">$14k</span></p>
+            <p class="quote__weeks" id="est-weeks">3–4 weeks</p>
+            <p class="quote__sum" id="est-sum" aria-live="polite">A web app, standard size, with 2 integrations, designed from scratch, at a standard pace.</p>
+            <a class="btn btn--ink" id="est-mail" href="mailto:hello@roughidea.studio">Send this to the studio<svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></a>
+            <p class="fine">Rough. Really rough. Fixed quotes come after one call.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 · ways to work -->
+    <section class="s s--ways" id="ways">
+      <div class="wrap">
+        <header class="shead">
+          <p class="label mono reveal">05 — Ways to work</p>
+          <h2 class="reveal" style="--d:1">Three <em>ways</em> in.</h2>
+          <p class="shead__intro reveal" style="--d:2">Fixed prices. No hourly billing. If we’re wrong about scope, that’s our problem, not yours.</p>
+        </header>
+
+        <div class="ribbon-anchor anchor--treble" data-anchor="treble" aria-hidden="true"></div>
+
+        <ol class="tiers">
+          <li class="tier reveal">
+            <div><h3 class="tier__name">The <em>Sketch</em></h3><p class="tier__t">A one-week sprint to find the shape of the thing, before anyone bets on it.</p></div>
+            <p class="tier__price"><strong>from $4,500</strong><span class="mono">1 week</span></p>
+            <ul class="tier__list"><li>45-minute kickoff</li><li>Clickable prototype</li><li>Technical plan</li><li>Fixed quote for the build</li><li>Yours either way</li></ul>
+            <p class="tier__best">Best for testing an idea before betting on it.</p>
+          </li>
+          <li class="tier reveal" style="--d:1">
+            <div><h3 class="tier__name">The <em>Build</em></h3><p class="tier__t">Design to launch, fixed scope, fixed price. A working link every Friday; code in your repository from day one.</p></div>
+            <p class="tier__price"><strong>from $18,000</strong><span class="mono">4–8 weeks</span></p>
+            <ul class="tier__list"><li>Design system</li><li>Working software</li><li>Tests and documentation</li><li>Launch</li><li>30 days of fixes on us</li></ul>
+            <p class="tier__best">Best for MVPs, web apps, SaaS v1 and automation overhauls.</p>
+          </li>
+          <li class="tier reveal" style="--d:2">
+            <div><h3 class="tier__name">The <em>Rhythm</em></h3><p class="tier__t">We stay. A monthly rhythm of improvements, new features and fixes for the things that break at 6pm on a Friday.</p></div>
+            <p class="tier__price"><strong>from $4,000</strong><span class="mono">per month</span></p>
+            <ul class="tier__list"><li>A set number of build days</li><li>The same team</li><li>Priority response</li><li>Monthly review</li><li>Cancel any month</li></ul>
+            <p class="tier__best">Best for products that are alive and growing.</p>
+          </li>
+        </ol>
+        <p class="ways__note reveal">Not sure which one? <a class="link-arrow" href="#start">Ask us</a> — it’s a two-line email, and we’ll tell you honestly.</p>
+
+        <div class="inbox reveal">
+          <h3>Every build ships with</h3>
+          <ul>
+            <li>Your repository, in your name, with full history</li>
+            <li>A one-page guide a new developer can read in ten minutes</li>
+            <li>A 30-day window where anything broken is fixed for free</li>
+            <li>A handover call, recorded, so nothing lives in our heads</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 · fair questions -->
+    <section class="s s--faq" id="faq">
+      <div class="wrap faq">
+        <div class="faq__intro">
+          <header class="shead">
+            <p class="label mono reveal">06 — Fair questions</p>
+            <h2 class="reveal" style="--d:1">Fair <em>questions.</em></h2>
+          </header>
+          <div class="ribbon-anchor anchor--q" data-anchor="q" aria-hidden="true"></div>
+          <p class="faq__note reveal">Open one and watch the tape: questions straighten out when they’re answered.</p>
+        </div>
+
+        <div class="acc reveal">
+          <div class="acc__item">
+            <h3 class="acc__h"><button class="acc__btn" type="button" aria-expanded="false" aria-controls="faq-a0" id="faq-q0">Will it look AI-made?<span class="acc__icon" aria-hidden="true"></span></button></h3>
+            <div class="acc__panel" id="faq-a0" role="region" aria-labelledby="faq-q0"><div><p>No. It will look like someone cared. AI speeds up the typing; every screen is designed by a person and argued about in a channel with too many emojis. You’ll see the difference in week one.</p></div></div>
+          </div>
+          <div class="acc__item">
+            <h3 class="acc__h"><button class="acc__btn" type="button" aria-expanded="false" aria-controls="faq-a1" id="faq-q1">Who owns the code?<span class="acc__icon" aria-hidden="true"></span></button></h3>
+            <div class="acc__panel" id="faq-a1" role="region" aria-labelledby="faq-q1"><div><p>You do. Everything lives in your repository from day one. Leave whenever you like; it’s all documented, tested and yours.</p></div></div>
+          </div>
+          <div class="acc__item">
+            <h3 class="acc__h"><button class="acc__btn" type="button" aria-expanded="false" aria-controls="faq-a2" id="faq-q2">What if I only have a vague idea?<span class="acc__icon" aria-hidden="true"></span></button></h3>
+            <div class="acc__panel" id="faq-a2" role="region" aria-labelledby="faq-q2"><div><p>That’s the normal amount. Vague is our favorite. We make it specific together in week one — on paper, before any code exists to get attached to.</p></div></div>
+          </div>
+          <div class="acc__item">
+            <h3 class="acc__h"><button class="acc__btn" type="button" aria-expanded="false" aria-controls="faq-a3" id="faq-q3">What about our data and security?<span class="acc__icon" aria-hidden="true"></span></button></h3>
+            <div class="acc__panel" id="faq-a3" role="region" aria-labelledby="faq-q3"><div><p>Your data never goes into a model. We keep secrets in secret managers, encrypt everything in transit and at rest, and follow the boring best practices that never make headlines. If you need a specific certification, we build to its checklist.</p></div></div>
+          </div>
+          <div class="acc__item">
+            <h3 class="acc__h"><button class="acc__btn" type="button" aria-expanded="false" aria-controls="faq-a4" id="faq-q4">What if I don’t like it?<span class="acc__icon" aria-hidden="true"></span></button></h3>
+            <div class="acc__panel" id="faq-a4" role="region" aria-labelledby="faq-q4"><div><p>You’ll know by Friday of week one, because you’ll have something to click. The sketch phase ends with a decision point: continue, change course, or stop and pay only for the sketch.</p></div></div>
+          </div>
+          <div class="acc__item">
+            <h3 class="acc__h"><button class="acc__btn" type="button" aria-expanded="false" aria-controls="faq-a5" id="faq-q5">Can you work with our existing team?<span class="acc__icon" aria-hidden="true"></span></button></h3>
+            <div class="acc__panel" id="faq-a5" role="region" aria-labelledby="faq-q5"><div><p>Happily. We join your Slack, Linear and Git, or run the whole thing and hand over a tidy repository. Either way, your team learns how it was built.</p></div></div>
+          </div>
+          <div class="acc__item">
+            <h3 class="acc__h"><button class="acc__btn" type="button" aria-expanded="false" aria-controls="faq-a6" id="faq-q6">Do you stick around after launch?<span class="acc__icon" aria-hidden="true"></span></button></h3>
+            <div class="acc__panel" id="faq-a6" role="region" aria-labelledby="faq-q6"><div><p>Yes. The first 30 days of fixes are included in every build. After that, the Rhythm plan keeps the same team on it, or we answer ad hoc within one business day.</p></div></div>
+          </div>
+          <div class="acc__item">
+            <h3 class="acc__h"><button class="acc__btn" type="button" aria-expanded="false" aria-controls="faq-a7" id="faq-q7">How fast is fast, really?<span class="acc__icon" aria-hidden="true"></span></button></h3>
+            <div class="acc__panel" id="faq-a7" role="region" aria-labelledby="faq-q7"><div><p>A website in two to three weeks. An MVP in four to eight. A full SaaS in eight to twelve. If someone promises much faster than that, ask to see it running.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 · start something -->
+    <section class="s s--start s--dark" id="start">
+      <div class="wrap start">
+        <div class="start__intro">
+          <div class="ribbon-anchor anchor--at" data-anchor="at" aria-hidden="true"></div>
+          <div class="above">
+            <p class="label mono reveal">07 — Start something</p>
+            <h2 class="reveal" style="--d:1">Bring us the <em>rough</em> bit.</h2>
+            <p class="shead__intro reveal" style="--d:2">One email is enough. Tell us what you’re trying to do and what’s in the way. We reply within two business days with a few questions, a plan and a number.</p>
+            <div class="email-row reveal" style="--d:2">
+              <a class="email" href="mailto:hello@roughidea.studio">hello@roughidea.studio</a>
+              <button class="copy" type="button" data-copy="hello@roughidea.studio"><span>Copy</span></button>
+            </div>
+            <ol class="next reveal" style="--d:3">
+              <li><span class="next__t"><h4>We reply, with questions.</h4> A real person reads every message.</span></li>
+              <li><span class="next__t"><h4>A 45-minute call, on us.</h4> You talk, we sketch.</span></li>
+              <li><span class="next__t"><h4>A one-page plan with a fixed price.</h4> Take it or leave it.</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <form class="startform reveal" id="start-form" novalidate>
+          <div class="field"><label class="mono" for="f-name">Your name</label><input id="f-name" name="name" autocomplete="name" required><p class="err">Tell us who to reply to.</p></div>
+          <div class="field"><label class="mono" for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required><p class="err">We need a way to reach you.</p></div>
+          <div class="field"><label class="mono" for="f-msg">What are you trying to do?</label><textarea id="f-msg" name="message" required placeholder="It’s fine if it’s vague."></textarea><p class="err">A sentence or two is enough.</p></div>
+          <div class="frow">
+            <div class="field"><label class="mono" for="f-budget">Rough budget</label>
+              <select id="f-budget" name="budget">
+                <option>Under $5k</option><option selected>$5k – $15k</option><option>$15k – $40k</option><option>$40k+</option><option>No idea yet</option>
+              </select>
+            </div>
+            <div class="field"><label class="mono" for="f-when">When?</label>
+              <select id="f-when" name="when">
+                <option>As soon as possible</option><option selected>This month</option><option>This quarter</option><option>Just exploring</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn" type="submit">Send it<svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></button>
+          <p class="fine">Opens your own mail app with everything filled in. Nothing is stored or sent anywhere else.</p>
+        </form>
+
+        <div class="startform start-ok" id="start-ok" hidden>
+          <p class="mono" style="color: var(--yellow)">Done</p>
+          <h3>Your mail app should be opening.</h3>
+          <p>If it isn’t, copy your note below and send it to <a class="link-arrow" href="mailto:hello@roughidea.studio">hello@roughidea.studio</a>.</p>
+          <pre id="ok-msg"></pre>
+          <div class="cta-row">
+            <button class="btn" type="button" data-copy="@msg"><span>Copy my note</span></button>
+            <button class="btn btn--ghost" type="button" id="ok-again"><span>Edit</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a class="nav__brand" href="#top"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 21.5c3.2-9 9.6-15 15-13.2 4.4 1.5 3.2 8.2-1.8 9.4-5.4 1.3-8.6-4.6-4.6-8.6C15.6 5 23.4 4.6 29 8.6" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Rough Idea</span></a>
+          <p>Rough ideas in. Working software out. A small studio for people who have one.</p>
+        </div>
+        <div class="footer__col"><h4>Studio</h4><ul>
+          <li><a href="#build">Build</a></li><li><a href="#method">Method</a></li><li><a href="#concepts">Concepts</a></li>
+        </ul></div>
+        <div class="footer__col"><h4>&nbsp;</h4><ul>
+          <li><a href="#cost">Cost</a></li><li><a href="#ways">Ways to work</a></li><li><a href="#faq">FAQ</a></li>
+        </ul></div>
+        <div class="footer__col"><h4>Contact</h4><ul>
+          <li><a href="mailto:hello@roughidea.studio">Email</a></li><li><a href="#start">Start a project</a></li>
+        </ul></div>
+      </div>
+      <div class="footer__bar mono">
+        <span>© <span id="year">2026</span> Rough Idea Studio</span>
+        <span>No cookies. No trackers.</span>
+        <span>Set in Bricolage Grotesque, Fraunces &amp; Martian Mono</span>
+      </div>
+    </div>
+  </footer>
+
+  <dialog class="cd" id="concept-dialog" aria-labelledby="cd-title">
+    <button class="cd__close" id="cd-close" type="button" aria-label="Close"><svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3 3 13"/></svg></button>
+    <div class="cd__grid">
+      <img class="cd__img" id="cd-img" src="assets/img/concept-crumb.jpg" alt="">
+      <div class="cd__body">
+        <p class="mono" id="cd-meta"></p>
+        <h3 id="cd-title"></h3>
+        <p class="cd__tag" id="cd-tag"></p>
+        <dl class="cd__facts">
+          <dt class="mono">The problem</dt><dd id="cd-problem"></dd>
+          <dt class="mono">What we built</dt><dd id="cd-built"></dd>
+          <dt class="mono">What we learned</dt><dd id="cd-learned"></dd>
+          <dt class="mono">Stack</dt><dd id="cd-stack"></dd>
+        </dl>
+        <p class="cd__note mono">Self-initiated concept. Not client work.</p>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="assets/js/math.js"></script>
+  <script src="assets/js/shapes.js"></script>
+  <script src="assets/js/ribbon.js"></script>
+  <script src="assets/js/render.js"></script>
+  <script src="assets/js/scene.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

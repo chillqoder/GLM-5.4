@@ -1,0 +1,304 @@
+[    1789ms] [ERROR] THREE.WebGLProgram: Shader Error 0 - VALIDATE_STATUS false
+
+Material Name: 
+Material Type: ShaderMaterial
+
+Program Info Log: Fragment shader is not compiled.
+
+FRAGMENT
+
+ERROR: 0:171: 'projectionMatrix' : undeclared identifier
+ERROR: 0:238: 'projectionMatrix' : undeclared identifier
+
+  166:     vec2 uv = suv;
+  167:     if (Rv.z < -0.03) {
+  168:       // Screen-space refraction, refined against the depth buffer so silhouettes stay stable.
+  169:       for (int it = 0; it < 2; it++) {
+  170:         float tz = path / (-Rv.z);
+> 171:         vec4 cp = projectionMatrix * vec4(Pv + Rv * tz, 1.0);
+  172:         vec2 cand = cp.xy / cp.w * 0.5 + 0.5;
+  173:         vec2 m = edgeFade(cand, 0.012);
+  174:         cand = mix(suv, cand, m.x * m.y);
+  175:         float d2 = texture2D(uSceneCopy, cand).a;
+  176:         if (d2 < surfDepth + 0.03) break;           // the offset landed on something in front of the surface
+  177:         uv = cand; @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:20345
+[    1789ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    1792ms] [ERROR] THREE.WebGLProgram: Shader Error 1282 - VALIDATE_STATUS false
+
+Material Name: 
+Material Type: ShaderMaterial
+
+Program Info Log: Fragment shader is not compiled.
+
+FRAGMENT
+
+ERROR: 0:169: 'projectionMatrix' : undeclared identifier
+
+  164:     vec2 uv = suv;
+  165:     if (Rv.z < -0.03) {
+  166:       // Screen-space refraction, refined against the depth buffer so silhouettes stay stable.
+  167:       for (int it = 0; it < 2; it++) {
+  168:         float tz = path / (-Rv.z);
+> 169:         vec4 cp = projectionMatrix * vec4(Pv + Rv * tz, 1.0);
+  170:         vec2 cand = cp.xy / cp.w * 0.5 + 0.5;
+  171:         vec2 m = edgeFade(cand, 0.012);
+  172:         cand = mix(suv, cand, m.x * m.y);
+  173:         float d2 = texture2D(uSceneCopy, cand).a;
+  174:         if (d2 < surfDepth + 0.03) break;           // the offset landed on something in front of the surface
+  175:         uv = cand; @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:20345
+[    1792ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2046ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2046ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2048ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2048ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2048ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2048ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2048ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2048ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2063ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2063ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2064ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2064ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2064ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2064ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2064ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2064ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2065ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2065ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2066ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2066ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2066ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2066ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2066ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2066ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2070ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2070ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2070ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2070ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2070ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2070ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2086ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2086ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2087ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2087ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2087ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2087ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2087ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2087ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2116ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2116ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2117ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2117ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2117ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2117ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2117ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2117ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2146ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2146ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2147ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2147ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2147ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2147ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2147ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2147ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2176ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2176ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2177ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2177ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2177ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2177ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2177ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2177ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2206ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2206ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2207ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2207ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2207ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2207ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2207ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2207ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2236ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2236ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2237ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2237ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2237ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2237ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2237ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2237ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2266ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2266ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2266ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2266ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2266ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2266ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2266ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2266ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2296ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2296ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2297ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2297ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2297ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2297ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2297ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2297ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2326ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2326ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2326ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2326ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2326ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2326ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2326ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2326ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2356ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2356ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2356ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2356ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2356ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2356ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2356ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2356ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2386ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2386ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2386ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2387ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2387ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2387ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2387ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2387ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2416ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2416ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2417ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2417ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2417ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2417ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2417ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2417ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2444ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2444ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2445ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2445ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2445ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2445ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2445ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2445ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2476ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2476ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2477ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2477ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2477ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2477ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2477ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2477ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2506ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2506ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2507ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2507ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2507ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2507ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2507ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2507ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2536ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2536ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2537ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2537ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2537ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2537ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2537ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2537ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2568ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2568ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2569ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2569ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2569ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2569ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2569ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2569ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2599ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2599ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2601ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2601ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2601ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2601ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2601ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2601ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2628ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2628ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2629ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2629ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2629ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2629ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2629ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2629ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2659ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2659ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2660ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2660ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2660ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2660ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2660ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2660ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2689ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2689ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2690ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2690ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2690ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2690ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2690ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2690ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2717ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2717ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2719ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2719ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2719ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2719ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2719ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2719ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2749ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2749ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2751ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2751ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2751ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2751ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2751ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2751ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2789ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2789ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2791ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2791ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2791ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2791ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2791ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2791ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2818ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2819ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2820ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2820ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2821ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2821ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2821ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2821ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2849ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2849ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2850ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2850ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2850ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2850ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2850ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2850ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2877ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2878ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2878ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2878ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2878ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2878ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2879ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2879ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2908ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2908ms] [WARNING] WebGL: INVALID_OPERATION: useProgram: program not valid @ https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js:23305
+[    2909ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2909ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2909ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2909ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2909ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2909ms] [WARNING] [.WebGL-0x10c00bcb400] GL_INVALID_OPERATION: glDrawElements: Feedback loop formed between Framebuffer and active Texture. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0
+[    2909ms] [WARNING] WebGL: too many errors, no more errors will be reported to the console for this context. @ http://127.0.0.1:8791/dev/preview.html?m=tank&test=1&t=2:0

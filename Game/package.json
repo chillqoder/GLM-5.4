@@ -1,0 +1,12 @@
+{
+  "name": "deepwake",
+  "version": "1.0.0",
+  "description": "DEEPWAKE - a voxel underground expedition platformer (Three.js, no build step)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node tools/serve.mjs",
+    "test": "node tests/run-tests.mjs",
+    "check:browser": "node tools/browser-check.mjs"
+  }
+}

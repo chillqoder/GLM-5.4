@@ -1,0 +1,6 @@
+[     174ms] TypeError: PLUME.copy is not a function
+    at createFilter (http://127.0.0.1:8791/dev/preview.html?m=tank&pebbles=1&castle=1&filter=1&t=4&az=0.62&polar=1.12&dist=12:1677:9)
+    at addFilter (http://127.0.0.1:8791/dev/preview.html?m=tank&pebbles=1&castle=1&filter=1&t=4&az=0.62&polar=1.12&dist=12:2251:15)
+    at buildPreviewModel (http://127.0.0.1:8791/dev/preview.html?m=tank&pebbles=1&castle=1&filter=1&t=4&az=0.62&polar=1.12&dist=12:2265:53)
+    at startPreview (http://127.0.0.1:8791/dev/preview.html?m=tank&pebbles=1&castle=1&filter=1&t=4&az=0.62&polar=1.12&dist=12:2175:14)
+    at http://127.0.0.1:8791/dev/preview.html?m=tank&pebbles=1&castle=1&filter=1&t=4&az=0.62&polar=1.12&dist=12:2224:3

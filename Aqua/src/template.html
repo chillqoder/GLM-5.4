@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<title>{{TITLE}}</title>
+<style>/*{{CSS}}*/</style>
+<script type="importmap">{{IMPORTMAP}}</script>
+<script>
+  // If the module never runs (Three.js CDN unreachable, or a syntax error), say so instead of spinning forever.
+  setTimeout(function () {
+    if (window.__aquariumReady) return;
+    var f = document.getElementById('fallback'), d = document.getElementById('fallback-detail'), b = document.getElementById('boot');
+    if (!f || !d) return;
+    d.textContent = 'Three.js could not be loaded from cdn.jsdelivr.net. Check the network connection and reload.';
+    f.hidden = false; if (b) b.classList.add('gone');
+  }, 25000);
+  window.addEventListener('error', function (e) {
+    if (window.__aquariumReady || !e || !e.message) return;
+    var f = document.getElementById('fallback'), d = document.getElementById('fallback-detail'), b = document.getElementById('boot');
+    if (!f || !d) return;
+    d.textContent = e.message; f.hidden = false; if (b) b.classList.add('gone');
+  });
+</script>
+</head>
+<body>
+{{BODY}}
+<script type="module">
+//{{SCRIPT}}
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#101923" />
+  <title>DEEPWAKE</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23101923'/%3E%3Crect x='3' y='4' width='10' height='8' fill='%23e6e0d2'/%3E%3Crect x='9' y='7' width='2' height='2' fill='%23ffa030'/%3E%3Crect x='5' y='6' width='3' height='4' fill='%2322262c'/%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --ink: #e6e0d2;
+      --ink-dim: #a9b4c0;
+      --backing: rgba(16, 22, 30, 0.86);
+      --slate: #384552;
+      --trim: #a9bccf;
+      --amber: #ffa030;
+      --teal: #5fe8d8;
+      --cyan: #7fe6ff;
+      --hazard: #ff5a2a;
+      --font: "Courier New", Courier, "Lucida Console", monospace;
+      --safe-l: env(safe-area-inset-left, 0px);
+      --safe-r: env(safe-area-inset-right, 0px);
+      --safe-t: env(safe-area-inset-top, 0px);
+      --safe-b: env(safe-area-inset-bottom, 0px);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: #101923; color: var(--ink); font-family: var(--font); overflow: hidden; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+    #app { position: fixed; inset: 0; }
+    canvas#game { position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: auto; }
+    .hidden { display: none !important; }
+
+    /* ---------- HUD ---------- */
+    #hud { position: absolute; top: calc(10px + var(--safe-t)); left: calc(12px + var(--safe-l)); display: flex; flex-direction: column; gap: 6px; pointer-events: none; font-size: 13px; letter-spacing: 0.5px; text-shadow: 0 1px 0 #000; }
+    .hud-row { display: flex; align-items: center; gap: 8px; }
+    .hud-label { color: var(--ink-dim); font-size: 11px; text-transform: uppercase; min-width: 78px; }
+    #integrity { display: flex; gap: 4px; }
+    #integrity .seg { width: 26px; height: 12px; border: 2px solid var(--slate); background: rgba(56, 69, 82, 0.35); }
+    #integrity .seg.on { background: var(--ink); border-color: var(--ink); box-shadow: 0 0 6px rgba(230, 224, 210, 0.4); }
+    #integrity .seg.shield { background: var(--cyan); border-color: var(--cyan); }
+    #resonance { position: relative; width: 160px; height: 12px; border: 2px solid var(--slate); background: rgba(56, 69, 82, 0.35); }
+    #resonance .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: linear-gradient(90deg, #2a7f90, var(--cyan)); transition: width 0.08s linear; }
+    #resonance .fill.low { background: linear-gradient(90deg, #7a4a1a, var(--amber)); }
+    #resonance .tick { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: 0.85; }
+    #resonance .tick.shield { background: var(--amber); opacity: 0.95; }
+    #resonance-num { color: var(--ink-dim); font-size: 11px; min-width: 30px; }
+    #relays { display: flex; gap: 6px; }
+    .relay { padding: 2px 7px; border: 2px solid var(--slate); color: var(--ink-dim); font-size: 11px; }
+    .relay.active { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 8px rgba(127, 230, 255, 0.35); }
+    #archives-pill { padding: 2px 7px; border: 2px solid var(--slate); color: var(--ink-dim); font-size: 11px; }
+    #archives-pill.full { border-color: var(--teal); color: var(--teal); }
+    #hud-buttons { position: absolute; top: calc(10px + var(--safe-t)); right: calc(12px + var(--safe-r)); display: flex; gap: 8px; }
+    .icon-btn { width: 40px; height: 40px; border: 2px solid var(--slate); background: var(--backing); color: var(--ink); font-family: var(--font); font-size: 15px; cursor: pointer; display: grid; place-items: center; }
+    .icon-btn:hover, .icon-btn:focus-visible { border-color: var(--trim); outline: none; }
+    .icon-btn:focus-visible { box-shadow: 0 0 0 2px var(--cyan); }
+    #prompt { position: absolute; left: 50%; bottom: calc(88px + var(--safe-b)); transform: translateX(-50%); padding: 6px 12px; background: var(--backing); border: 2px solid var(--slate); font-size: 13px; white-space: nowrap; pointer-events: none; }
+    #prompt .key { color: var(--amber); font-weight: bold; }
+    #prompt.warn { border-color: var(--amber); }
+    #carry { position: absolute; left: calc(12px + var(--safe-l)); bottom: calc(14px + var(--safe-b)); display: flex; align-items: center; gap: 6px; padding: 4px 8px; background: var(--backing); border: 2px solid var(--amber); font-size: 11px; color: var(--ink); pointer-events: none; }
+    #carry .cell { width: 10px; height: 16px; background: var(--amber); display: inline-block; }
+    #toast { position: absolute; left: 50%; top: calc(64px + var(--safe-t)); transform: translateX(-50%); padding: 6px 12px; background: var(--backing); border: 2px solid var(--slate); font-size: 12px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.25s; }
+    #toast.show { opacity: 1; }
+    #toast.teal { border-color: var(--teal); color: var(--teal); }
+    #toast.amber { border-color: var(--amber); color: var(--amber); }
+    #toast.cyan { border-color: var(--cyan); color: var(--cyan); }
+    #toast.warn { border-color: var(--hazard); color: var(--hazard); }
+    #vignette { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.35s; }
+    #vignette.damage { box-shadow: inset 0 0 120px 40px rgba(255, 90, 42, 0.55); opacity: 1; transition: opacity 0.05s; }
+    #vignette.shield { box-shadow: inset 0 0 120px 30px rgba(127, 230, 255, 0.45); opacity: 1; transition: opacity 0.05s; }
+    #vignette.deny { box-shadow: inset 0 0 80px 10px rgba(255, 160, 48, 0.35); opacity: 1; transition: opacity 0.05s; }
+    #region-name { position: absolute; right: calc(12px + var(--safe-r)); top: calc(60px + var(--safe-t)); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-dim); text-shadow: 0 1px 0 #000; pointer-events: none; opacity: 0; transition: opacity 0.6s; }
+    #region-name.show { opacity: 1; }
+
+    /* ---------- overlays ---------- */
+    #overlay { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(10, 15, 21, 0.55); backdrop-filter: blur(2px); }
+    #overlay.clear { background: transparent; backdrop-filter: none; pointer-events: none; }
+    .panel { background: var(--backing); border: 2px solid var(--slate); box-shadow: 0 0 0 2px #0a0f15, 0 12px 40px rgba(0, 0, 0, 0.5); padding: 22px 26px; max-width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 32px - var(--safe-t) - var(--safe-b)); overflow: auto; pointer-events: auto; }
+    .panel h1 { margin: 0 0 4px; font-size: 34px; letter-spacing: 6px; font-weight: bold; color: var(--ink); text-shadow: 0 0 18px rgba(127, 230, 255, 0.35); }
+    .panel h2 { margin: 0 0 10px; font-size: 20px; letter-spacing: 3px; font-weight: bold; }
+    .panel p { margin: 6px 0; color: var(--ink-dim); font-size: 13px; line-height: 1.5; }
+    .panel p.ink { color: var(--ink); }
+    .tag { display: inline-block; padding: 2px 8px; border: 2px solid var(--amber); color: var(--amber); font-size: 11px; letter-spacing: 1px; margin-left: 8px; vertical-align: middle; }
+    .controls { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 12px 0; font-size: 12px; color: var(--ink-dim); }
+    .controls b { color: var(--ink); font-weight: normal; }
+    .controls b .k { color: var(--amber); }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .btn { font-family: var(--font); font-size: 14px; letter-spacing: 1px; padding: 10px 16px; background: var(--ink); color: #101923; border: 2px solid var(--ink); cursor: pointer; }
+    .btn:hover, .btn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cyan); }
+    .btn.secondary { background: transparent; color: var(--ink); border-color: var(--slate); }
+    .btn.danger { background: transparent; color: var(--hazard); border-color: var(--hazard); }
+    .btn.danger:hover { background: rgba(255, 90, 42, 0.12); }
+    .btn.toggle.off { opacity: 0.55; }
+    .stats { display: grid; grid-template-columns: auto auto; gap: 6px 20px; margin: 14px 0; font-size: 14px; }
+    .stats .k { color: var(--ink-dim); }
+    .stats .v { color: var(--ink); }
+    .stats .v.good { color: var(--teal); }
+    .stats .v.new { color: var(--amber); }
+    .relay-states { display: flex; gap: 10px; margin: 10px 0; font-size: 13px; }
+    .relay-states span { padding: 3px 9px; border: 2px solid var(--slate); color: var(--ink-dim); }
+    .relay-states span.on { border-color: var(--cyan); color: var(--cyan); }
+    .records { margin-top: 12px; font-size: 12px; color: var(--ink-dim); border-top: 1px solid var(--slate); padding-top: 10px; }
+    .archives-list { margin: 8px 0 0; padding: 0; list-style: none; font-size: 12px; }
+    .archives-list li { padding: 6px 8px; border-left: 2px solid var(--slate); margin: 4px 0; color: var(--ink-dim); }
+    .archives-list li.got { border-color: var(--teal); color: var(--ink); }
+    .archives-list li .t { color: var(--teal); display: block; }
+    .hint { font-size: 11px; color: var(--ink-dim); margin-top: 10px; }
+    #recovery-banner { position: absolute; left: 50%; top: 18%; transform: translateX(-50%); padding: 10px 18px; background: var(--backing); border: 2px solid var(--hazard); font-size: 16px; letter-spacing: 3px; pointer-events: none; }
+    #archive-fragment { position: absolute; left: 50%; top: calc(72px + var(--safe-t)); transform: translateX(-50%); width: min(460px, calc(100vw - 32px)); background: var(--backing); border: 2px solid var(--teal); padding: 12px 16px; pointer-events: auto; }
+    #archive-fragment .t { color: var(--teal); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; }
+    #archive-fragment .x { font-size: 13px; line-height: 1.5; margin: 6px 0; }
+    #archive-fragment .d { font-size: 11px; color: var(--ink-dim); }
+    #fatal { position: absolute; inset: 0; display: grid; place-items: center; background: #101923; }
+    #fatal .panel { max-width: 420px; }
+    #fatal h2 { color: var(--hazard); }
+
+    /* ---------- touch controls ---------- */
+    #touch { position: absolute; inset: 0; pointer-events: none; display: none; }
+    body.touch #touch { display: block; }
+    #touch .cluster { position: absolute; bottom: calc(16px + var(--safe-b)); display: flex; gap: 10px; pointer-events: none; }
+    #touch .cluster.left { left: calc(16px + var(--safe-l)); }
+    #touch .cluster.right { right: calc(16px + var(--safe-r)); align-items: flex-end; }
+    .tbtn { width: 62px; height: 62px; border-radius: 50%; border: 2px solid rgba(169, 188, 207, 0.6); background: rgba(16, 22, 30, 0.55); color: var(--ink); font-family: var(--font); font-size: 11px; letter-spacing: 1px; pointer-events: auto; touch-action: none; display: grid; place-items: center; user-select: none; -webkit-user-select: none; }
+    .tbtn.big { width: 74px; height: 74px; font-size: 12px; }
+    .tbtn.small { width: 54px; height: 54px; font-size: 10px; }
+    .tbtn.active { background: rgba(127, 230, 255, 0.35); border-color: var(--cyan); }
+    .tbtn.ability.active { background: rgba(255, 160, 48, 0.35); border-color: var(--amber); }
+    .tbtn.dim { opacity: 0.35; }
+    @media (max-height: 480px) and (orientation: landscape) {
+      #hud { font-size: 11px; gap: 3px; }
+      .hud-label { min-width: 60px; font-size: 10px; }
+      #resonance { width: 120px; }
+      #integrity .seg { width: 20px; }
+      .tbtn { width: 48px; height: 48px; font-size: 9px; }
+      .tbtn.big { width: 58px; height: 58px; }
+      .tbtn.small { width: 42px; height: 42px; }
+      #touch .cluster { bottom: calc(8px + var(--safe-b)); gap: 6px; }
+      #prompt { bottom: calc(70px + var(--safe-b)); font-size: 11px; }
+      #carry { bottom: calc(8px + var(--safe-b)); }
+    }
+    @media (max-width: 520px) {
+      .panel h1 { font-size: 26px; letter-spacing: 4px; }
+      .panel { padding: 16px; }
+      .controls { font-size: 11px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #toast, #vignette, #region-name { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <canvas id="game" aria-label="DEEPWAKE game view"></canvas>
+
+    <div id="hud" aria-live="off">
+      <div class="hud-row"><span class="hud-label">Integrity</span><span id="integrity"><span class="seg"></span><span class="seg"></span><span class="seg"></span></span></div>
+      <div class="hud-row"><span class="hud-label">Resonance</span><span id="resonance"><span class="fill"></span><span class="tick" style="left:35%"></span><span class="tick shield" style="left:50%"></span></span><span id="resonance-num">100</span></div>
+      <div class="hud-row"><span class="hud-label">Relays</span><span id="relays"><span class="relay" data-relay="A">A</span><span class="relay" data-relay="B">B</span><span class="relay" data-relay="C">C</span></span></div>
+      <div class="hud-row"><span class="hud-label">Archives</span><span id="archives-pill">0 / 3</span></div>
+    </div>
+    <div id="hud-buttons">
+      <button id="btn-mute" class="icon-btn" aria-label="Mute audio" title="Mute (M)">♪</button>
+      <button id="btn-pause" class="icon-btn" aria-label="Pause game" title="Pause (P / Esc)">❚❚</button>
+    </div>
+    <div id="region-name"></div>
+    <div id="prompt" class="hidden"></div>
+    <div id="carry" class="hidden"><span class="cell"></span>Carrying cell · abilities offline</div>
+    <div id="toast"></div>
+    <div id="vignette"></div>
+
+    <div id="touch" aria-hidden="true">
+      <div class="cluster left">
+        <button class="tbtn big" data-act="left" aria-label="Move left">◀</button>
+        <button class="tbtn big" data-act="right" aria-label="Move right">▶</button>
+      </div>
+      <div class="cluster right">
+        <button class="tbtn small ability" data-act="pulse" aria-label="Echo pulse">PULSE</button>
+        <button class="tbtn small ability" data-act="dash" aria-label="Dash">DASH</button>
+        <button class="tbtn small" data-act="interact" aria-label="Interact">USE</button>
+        <button class="tbtn big" data-act="jump" aria-label="Jump">JUMP</button>
+      </div>
+    </div>
+
+    <div id="recovery-banner" class="hidden">Rebooting at Station</div>
+    <div id="archive-fragment" class="hidden" role="dialog" aria-live="polite">
+      <div class="t"></div>
+      <div class="x"></div>
+      <div class="d">E / Enter — dismiss · also readable from the pause menu</div>
+    </div>
+
+    <div id="overlay" class="hidden"><div class="panel" id="panel"></div></div>
+
+    <div id="fatal" class="hidden">
+      <div class="panel">
+        <h2>Display unavailable</h2>
+        <p>DEEPWAKE needs WebGL to render its world, and this browser or device reports that WebGL is unavailable or disabled.</p>
+        <p>Try enabling hardware acceleration or opening the game in a current desktop or mobile browser.</p>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
